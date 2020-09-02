@@ -1,0 +1,73 @@
+service: party-api
+
+plugins:
+   - serverless-appsync-plugin
+   - serverless-pseudo-parameters
+   - serverless-stack-output
+
+package:
+  exclude:
+    - ./node_modules/**
+    - node_modules/**
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  profile: default
+  region: ${opt:region, 'us-east-1'}
+
+functions:
+  getAuthors:
+    handler: src/functions/authors/getAuthors.getAuthors
+  getBooks:
+    handler: src/functions/books/getBooks.getBooks
+
+custom:
+  accountId: #{AWS::AccountId}  
+  stage: ${opt:stage, 'dev'}
+  output:
+    file: ../client/src/stack.json
+  appSync:
+    name: ${self:service}-${self:custom.stage}    
+    authenticationType: AMAZON_COGNITO_USER_POOLS
+    userPoolConfig:
+      awsRegion: ${self:provider.region}
+      defaultAction: ALLOW
+      userPoolId:  { Ref: CognitoUserPool } 
+    logConfig:
+      loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
+      level: ALL
+    defaultMappingTemplates: # default templates. Useful for Lambda templates that are often repetitive. Will be used if the template is not specified in a resolver      
+      # respone: false # my.response.template.tpl # or e.g.: false for Direct lambdas
+      request: false # my.request.template.tpl # or, e.g: false for Direct lambdas
+    mappingTemplates:      
+      - dataSource: getAuthorsDataSource
+        type: Query #Query, Mutation, Subscription
+        field: getAuthors
+        response: false # this is weird - defaultMappingTemplates.request value is pulled correctly, 
+        # however defaultMappingTemplates.response is not pulled and i have to set it explicitly
+      - dataSource: getBooksDataSource
+        type: Query
+        field: getBooks        
+        response: false
+    schema: schema.graphql
+    dataSources:      
+      - type: AWS_LAMBDA
+        name: getAuthorsDataSource
+        description: 'Authors DataSource'
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetAuthorsLambdaFunction", Arn] } # Where GraphqlLambdaFunction is the lambda function cloudformation resource created by serverless for the serverless function named graphql
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getBooksDataSource
+        description: 'Books DataSource'
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetBooksLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+
+
+resources:
+  - ${file(resources/roles.yml)}
+  - ${file(resources/cognito-user-pool.yml)}
+  - ${file(resources/cognito-identity-pool.yml)}
+  - ${file(resources/outputs.yml)}

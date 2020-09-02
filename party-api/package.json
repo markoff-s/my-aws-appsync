@@ -1,0 +1,14 @@
+{
+  "name": "party-api",
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "serverless-appsync-plugin": "^1.4.0",
+    "serverless-pseudo-parameters": "^2.5.0",
+    "serverless-stack-output": "^0.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "author": "Slava Markov",
+  "license": "MIT"
+}

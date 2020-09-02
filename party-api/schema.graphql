@@ -1,0 +1,39 @@
+# type Mutation {
+# 	createMessage(
+# 		body: String!
+# 	): Message!
+# }
+
+type Query {
+	# getMessages(filter: String): [Message!]!
+	getAuthors: [Author!]!
+	getBooks: [Book!]!
+}
+
+# type Subscription {
+# 	addMessage: Message
+# 		@aws_subscribe(mutations: ["createMessage"])
+# }
+
+# type Message {
+# 	messageId: String!
+# 	body: String!
+# 	createdAt: String!
+# 	handle: String!
+# }
+
+type Author {
+	id: String!
+	name: String!	
+}
+
+type Book {
+	id: String!
+	title: String!	
+}
+
+schema {
+	query: Query
+	# mutation: Mutation
+	# subscription: Subscription
+}
