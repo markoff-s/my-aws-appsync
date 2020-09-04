@@ -1,0 +1,12 @@
+{
+  "UserPoolClientId": "2gnrq00a6jpg55aaca6l4fbqiq",
+  "GraphQlApiUrl": "https://rd23k5riuvhqnciaoiqe7gfnnu.appsync-api.us-east-1.amazonaws.com/graphql",
+  "GetAuthorsLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getAuthors:1",
+  "UserPoolId": "us-east-1_29bfKqvCP",
+  "GetCountriesLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getCountries:1",
+  "Region": "us-east-1",
+  "IdentityPoolId": "us-east-1:2addf54a-2d67-40ed-a1a7-3acf06730ac7",
+  "GetBooksLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getBooks:1",
+  "GraphQlApiId": "777acxdnpbeankmda2sspbxdi4",
+  "ServerlessDeploymentBucketName": "party-api-dev-serverlessdeploymentbucket-725uilgzrw93"
+}
