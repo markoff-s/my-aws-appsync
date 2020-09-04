@@ -23,6 +23,10 @@ functions:
     handler: src/functions/books/getBooks.getBooks
   getCountries:
     handler: src/functions/country/getCountries.getCountries
+  getMajorGenres:
+    handler: src/functions/genre/getMajorGenres.getMajorGenres
+  getMinorGenres:
+    handler: src/functions/genre/getMinorGenres.getMinorGenres
 
 custom:
   accountId: #{AWS::AccountId}  
@@ -43,38 +47,53 @@ custom:
       # respone: false # my.response.template.tpl # or e.g.: false for Direct lambdas
       request: false # my.request.template.tpl # or, e.g: false for Direct lambdas
     mappingTemplates:      
-      - dataSource: getAuthorsDataSource
+      - dataSource: getAuthorsDS
         type: Query #Query, Mutation, Subscription
         field: authors
         response: false # this is weird - defaultMappingTemplates.request value is pulled correctly, 
         # however defaultMappingTemplates.response is not pulled and i have to set it explicitly
-      - dataSource: getBooksDataSource
+      - dataSource: getBooksDS
         type: Query
         field: books        
         response: false
-      - dataSource: getCountriesDataSource
+      - dataSource: getCountriesDS
         type: Query
         field: countries        
+        response: false
+      - dataSource: getMajorGenresDS
+        type: Query
+        field: majorGenres        
+        response: false
+      - dataSource: getMinorGenresDS
+        type: Query
+        field: minorGenres        
         response: false
     schema: schema.graphql
     dataSources:      
       - type: AWS_LAMBDA
-        name: getAuthorsDataSource
-        description: 'Authors DataSource'
+        name: getAuthorsDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetAuthorsLambdaFunction", Arn] } # Where GraphqlLambdaFunction is the lambda function cloudformation resource created by serverless for the serverless function named graphql
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       - type: AWS_LAMBDA
-        name: getBooksDataSource
-        description: 'Books DataSource'
+        name: getBooksDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetBooksLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       - type: AWS_LAMBDA
-        name: getCountriesDataSource
-        description: 'Countries DataSource'
+        name: getCountriesDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getMajorGenresDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetMajorGenresLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getMinorGenresDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetMinorGenresLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
 
 
