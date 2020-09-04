@@ -21,6 +21,8 @@ functions:
     handler: src/functions/authors/getAuthors.getAuthors
   getBooks:
     handler: src/functions/books/getBooks.getBooks
+  getCountries:
+    handler: src/functions/country/getCountries.getCountries
 
 custom:
   accountId: #{AWS::AccountId}  
@@ -43,12 +45,16 @@ custom:
     mappingTemplates:      
       - dataSource: getAuthorsDataSource
         type: Query #Query, Mutation, Subscription
-        field: getAuthors
+        field: authors
         response: false # this is weird - defaultMappingTemplates.request value is pulled correctly, 
         # however defaultMappingTemplates.response is not pulled and i have to set it explicitly
       - dataSource: getBooksDataSource
         type: Query
-        field: getBooks        
+        field: books        
+        response: false
+      - dataSource: getCountriesDataSource
+        type: Query
+        field: countries        
         response: false
     schema: schema.graphql
     dataSources:      
@@ -63,6 +69,12 @@ custom:
         description: 'Books DataSource'
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetBooksLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getCountriesDataSource
+        description: 'Countries DataSource'
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
 
 

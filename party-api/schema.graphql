@@ -1,13 +1,19 @@
-# type Mutation {
-# 	createMessage(
-# 		body: String!
-# 	): Message!
-# }
+type Mutation {
+	createPerson(input: CreatePersonInput!): Person!
+	createGroup(input: CreateGroupInput!): Group!
+}
 
 type Query {
-	# getMessages(filter: String): [Message!]!
-	getAuthors: [Author!]!
-	getBooks: [Book!]!
+	countries: [Country!]!
+	majorGenres: [MajorGenre!]!
+	minorGenres: [MinorGenre!]!
+	persons: [Person!]!
+	person(id: Int!): Person
+	groups: [Group!]!
+	group(id: Int!): Group
+
+	authors: [Author!]!
+	books: [Book!]!
 }
 
 # type Subscription {
@@ -15,13 +21,70 @@ type Query {
 # 		@aws_subscribe(mutations: ["createMessage"])
 # }
 
-# type Message {
-# 	messageId: String!
-# 	body: String!
-# 	createdAt: String!
-# 	handle: String!
-# }
+type Country {
+	id: Int!
+	name: String!	
+}
 
+type MajorGenre {
+	id: Int!
+	name: String!	
+}
+
+type MinorGenre {
+	id: Int!
+	name: String!	
+}
+
+type Person {
+	id: Int!
+	name: String!
+	type: PersonType!
+	dob: String!
+	country: Country!
+	groups: [Group!]
+}
+
+input CreatePersonInput {
+	name: String!
+	type: PersonType!
+	dob: String!
+	countryId: Int!
+	groups: [Int]
+}
+
+enum PersonType {
+	NATURAL_PERSON
+	UNNATURAL_PERSON
+}
+
+type Group {
+	id: Int!
+	name: String!
+	type: GroupType!
+	dateFormed: String!
+	majorGenre: MajorGenre!
+	minorGenre: MinorGenre!
+	country: Country!
+	persons: [Person!]
+}
+
+input CreateGroupInput {
+	name: String!
+	type: GroupType!
+	dateFormed: String!
+	majorGenreId: Int!
+	minorGenreId: Int!
+	countryId: Int!
+	persons: [Int]
+}
+
+enum GroupType {
+	BAND
+	ORCHESTRA
+}
+
+# DEPRECATED
 type Author {
 	id: String!
 	name: String!	
@@ -31,9 +94,10 @@ type Book {
 	id: String!
 	title: String!	
 }
+# DEPRECATED
 
 schema {
 	query: Query
-	# mutation: Mutation
+	mutation: Mutation
 	# subscription: Subscription
 }
