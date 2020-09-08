@@ -1,12 +1,14 @@
 {
-  "UserPoolClientId": "2gnrq00a6jpg55aaca6l4fbqiq",
-  "GraphQlApiUrl": "https://rd23k5riuvhqnciaoiqe7gfnnu.appsync-api.us-east-1.amazonaws.com/graphql",
-  "GetAuthorsLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getAuthors:1",
-  "UserPoolId": "us-east-1_29bfKqvCP",
-  "GetCountriesLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getCountries:1",
+  "UserPoolClientId": "51n8gugpctl7di92h8g9jq07b2",
+  "GraphQlApiUrl": "https://yatecigz2naixkubl72fvkieqy.appsync-api.us-east-1.amazonaws.com/graphql",
+  "GetAuthorsLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getAuthors:10",
+  "GetGroupsLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getGroups:8",
+  "UserPoolId": "us-east-1_EjeAdqmIV",
+  "GetCountriesLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getCountries:11",
   "Region": "us-east-1",
-  "IdentityPoolId": "us-east-1:2addf54a-2d67-40ed-a1a7-3acf06730ac7",
-  "GetBooksLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getBooks:1",
-  "GraphQlApiId": "777acxdnpbeankmda2sspbxdi4",
-  "ServerlessDeploymentBucketName": "party-api-dev-serverlessdeploymentbucket-725uilgzrw93"
+  "IdentityPoolId": "us-east-1:85dd1d22-41ef-4471-9be5-3e9a7cfed426",
+  "GetBooksLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getBooks:9",
+  "GraphQlApiId": "kkrgvz3hrbcd3iaocpvhutsfbq",
+  "GetPersonsLambdaFunctionQualifiedArn": "arn:aws:lambda:us-east-1:331583806865:function:party-api-dev-getPersons:6",
+  "ServerlessDeploymentBucketName": "party-api-dev-serverlessdeploymentbucket-1qtewh0m2xkcp"
 }
