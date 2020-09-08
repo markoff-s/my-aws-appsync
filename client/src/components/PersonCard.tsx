@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react';
 import Container from '../styled-components/Container';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Person } from '../App';
+import { Person } from '../types/ArtistTypes';
 // TODO: create update method
 // TODO: create delete method
 // import { } from '../graphql/mutations';
