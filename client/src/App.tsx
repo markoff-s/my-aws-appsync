@@ -12,6 +12,8 @@ import * as mutations from './graphql/mutations';
 import { Group, Person } from './types/ArtistTypes';
 import './scss/app.scss';
 
+// TODO: simplify state management across app (probably Redux, for long-term scalability)
+
 const App = () => {
   const [groups, setGroups] = useState<[Group] | []>([]);
   const [persons, setPersons] = useState([]);
