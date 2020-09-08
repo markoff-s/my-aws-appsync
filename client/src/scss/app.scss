@@ -9,9 +9,26 @@
   &:first-child {
     margin-top: 50px;
   }
+  .app__buttons,
+  .app__forms {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    & > * {
+      margin: 1rem;
+    }
+  }
 }
 
-.artist-grid {
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.results-grid {
   width: 50%;
   margin: 1rem;
   display: grid;
