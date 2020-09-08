@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import Container from '../styled-components/Container';
+import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { Group } from '../types/ArtistTypes';
@@ -74,7 +74,7 @@ const GroupCard: React.FC<GroupProps> = ({ group, setGroups }) => {
   };
 
   return (
-    <Container>
+    <Card>
       {toggleUpdateGroup ? (
         <Fragment>
           <input type="text" value={updateName} onChange={(e) => setUpdateName(e.target.value)} />
@@ -112,11 +112,12 @@ const GroupCard: React.FC<GroupProps> = ({ group, setGroups }) => {
       ) : (
         <Fragment>
           <h3>{name}</h3>
-          <p>{type}</p>
-          <p>{dateFormed}</p>
-          <p>{majorGenre.name}</p>
-          <p>{minorGenre.name}</p>
-          <p>{country.name}</p>
+          <p>Type: {type}</p>
+          <p>Date formed: {dateFormed}</p>
+          <p>Major genre: {majorGenre.name}</p>
+          <p>Minor Genre: {minorGenre.name}</p>
+          <p>Country: {country.name}</p>
+          <p>Persons</p>
           <ul>
             {persons.map((person) => (
               <li key={person.id}>{person.name}</li>
@@ -128,7 +129,7 @@ const GroupCard: React.FC<GroupProps> = ({ group, setGroups }) => {
           </Button>
         </Fragment>
       )}
-    </Container>
+    </Card>
   );
 };
 
