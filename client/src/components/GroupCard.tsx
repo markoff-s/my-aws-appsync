@@ -16,7 +16,6 @@ interface GroupProps {
 
 const GroupCard: React.FC<GroupProps> = ({ group, setGroups }) => {
   const { name, type, dateFormed, majorGenre, minorGenre, country, persons } = group;
-  console.log(group);
   const [toggleUpdateGroup, setToggleUpdateGroup] = useState(false);
   const [updateName, setUpdateName] = useState(name);
   const [updateType, setUpdateType] = useState(type);
