@@ -1,6 +1,5 @@
 /* tslint:disable */
 /* eslint-disable */
-// this is an auto generated file. This will be overwritten
 
 export const countries = /* GraphQL */ `
   query Countries {
@@ -47,7 +46,7 @@ export const persons = /* GraphQL */ `
   }
 `;
 export const person = /* GraphQL */ `
-  query Person($id: Int!) {
+  query Person($id: ID!) {
     person(id: $id) {
       id
       name
@@ -66,6 +65,7 @@ export const person = /* GraphQL */ `
     }
   }
 `;
+
 export const groups = /* GraphQL */ `
   query Groups {
     groups {
@@ -95,7 +95,7 @@ export const groups = /* GraphQL */ `
   }
 `;
 export const group = /* GraphQL */ `
-  query Group($id: Int!) {
+  query Group($id: ID!) {
     group(id: $id) {
       id
       name
