@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import StyledForm from '../styled-components/Form';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { createPerson as CreatePerson } from '../graphql/mutations';
+import * as queries from '../graphql/queries';
 
 interface Props {
   setPersons: React.Dispatch<React.SetStateAction<any>>;
 }
+
+type Country = {
+  id: string;
+  name: string;
+};
 
 // TODO: flesh out logic for adding country & groups
 const Form: React.FC<Props> = ({ setPersons }) => {
@@ -15,8 +21,13 @@ const Form: React.FC<Props> = ({ setPersons }) => {
   const [dob, setDob] = useState('');
   const [country, setCountry] = useState<number | string>('');
   // const [groups, setGroups] = useState()
+  const [availableCountries, setAvailableCountries] = useState<[Country] | []>([]);
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
     const newPerson = { name, type, dob, country };
     setName('');
@@ -29,7 +40,17 @@ const Form: React.FC<Props> = ({ setPersons }) => {
     } catch (err) {
       console.log('error: ', err);
     }
-  };
+  }
+
+  async function fetchCountries() {
+    try {
+      const countryData: any = await API.graphql({ query: queries.countries });
+      console.log(countryData);
+      setAvailableCountries(countryData.data.countries);
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
 
   return (
     <StyledForm>
@@ -51,12 +72,14 @@ const Form: React.FC<Props> = ({ setPersons }) => {
         value={dob}
         onChange={(e) => setDob(e.target.value)}
       />
-      <input
-        type="text"
-        placeholder="Enter country"
-        value={country}
-        onChange={(e) => setType(e.target.value)}
-      />
+      <select value={country} onChange={(e) => setType(e.target.value)}>
+        {availableCountries.length &&
+          availableCountries.map((country: Country) => (
+            <option key={country.id} value={country.id}>
+              {country.name}
+            </option>
+          ))}
+      </select>
       <Button onClick={(e) => handleSubmit(e)}>Submit</Button>
     </StyledForm>
   );
