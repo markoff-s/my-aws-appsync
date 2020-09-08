@@ -113,7 +113,6 @@ const GroupCard: React.FC<GroupProps> = ({ group, setGroups }) => {
       ) : (
         <Fragment>
           <h3>{name}</h3>
-          <p>{name}</p>
           <p>{type}</p>
           <p>{dateFormed}</p>
           <p>{majorGenre.name}</p>
