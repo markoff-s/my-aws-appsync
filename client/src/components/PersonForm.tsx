@@ -41,7 +41,6 @@ const Form: React.FC<Props> = ({ setPersons }) => {
   async function fetchCountries() {
     try {
       const countryData: any = await API.graphql({ query: queries.countries });
-      console.log(countryData);
       setAvailableCountries(countryData.data.countries);
     } catch (err) {
       console.log('error: ', err);
