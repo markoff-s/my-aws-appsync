@@ -22,15 +22,9 @@ const App = () => {
     fetchPersons();
   }, []);
 
-  useEffect(() => {
-    console.log('Groups: ', groups);
-    console.log('Persons: ', persons);
-  }, [groups, persons]);
-
   async function fetchGroups() {
     try {
       const groupsData: any = await API.graphql({ query: queries.groups });
-      console.log('groupsData', groupsData.data);
       setGroups(groupsData.data.groups);
     } catch (err) {
       console.log('error: ', err);
