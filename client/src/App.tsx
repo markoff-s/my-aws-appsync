@@ -45,7 +45,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <div className="app">
-        <h2>Add and update artists</h2>
+        <h1>Grow</h1>
         <div className="app__buttons">
           <Button
             color={toggleForm === 'group' ? 'red' : ''}
