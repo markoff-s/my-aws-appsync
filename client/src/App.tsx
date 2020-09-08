@@ -9,39 +9,8 @@ import theme from './styled-components/Theme';
 import Button from './styled-components/Button';
 import * as queries from './graphql/queries';
 import * as mutations from './graphql/mutations';
+import { Group, Person } from './types/ArtistTypes';
 import './scss/app.scss';
-
-export type Group = {
-  id: number;
-  name: string;
-  type: string;
-  dateFormed: string;
-  majorGenre: {
-    id: number;
-    name: string;
-  };
-  minorGenre: {
-    id: number;
-    name: string;
-  };
-  country: {
-    id: number;
-    name: string;
-  };
-  persons: [Person];
-};
-
-export type Person = {
-  id: number;
-  name: string;
-  type: string;
-  dob: string;
-  country: {
-    id: number;
-    name: string;
-  };
-  groups: [Group];
-};
 
 const App = () => {
   const [groups, setGroups] = useState<[Group] | []>([]);
