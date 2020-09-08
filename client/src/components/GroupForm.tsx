@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import StyledForm from '../styled-components/Form';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { createGroup as CreateGroup } from '../graphql/mutations';
+import * as queries from '../graphql/queries';
+import { Genre } from '../types/ArtistTypes';
 
 interface Props {
   setGroups: React.Dispatch<React.SetStateAction<any>>;
@@ -13,20 +15,48 @@ interface GroupPersonsData {
   prevState: [string];
 }
 
-// TODO: simplify state management
-// TODO: flesh out logic for adding genres, country, and people
+// TODO: flesh out logic for adding people
 
 const Form: React.FC<Props> = ({ setGroups }) => {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [dateFormed, setDateFormed] = useState('');
-  const [majorGenre, setMajorGenre] = useState('');
-  const [minorGenre, setMinorGenre] = useState('');
+  const [majorGenre, setMajorGenre] = useState<number | string>('');
+  const [minorGenre, setMinorGenre] = useState<number | string>('');
   const [country, setCountry] = useState<number | string>('');
   const [personVal, setPersonVal] = useState('');
   // const [persons, setPersons] = useState<GroupPersonsData | [string]>([]);
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const [availableMajorGenres, setAvailableMajorGenres] = useState<[Genre] | []>([]);
+  const [availableMinorGenres, setAvailableMinorGenres] = useState<[Genre] | []>([]);
+
+  // TODO: add separate useEffect to update minor genres when majorGenre is changed
+  useEffect(() => {
+    fetchMajorGenres();
+    fetchMinorGenres();
+  }, []);
+
+  async function fetchMajorGenres() {
+    console.log('fetching genres');
+    try {
+      const majorGenreData: any = await API.graphql({ query: queries.majorGenres });
+      setAvailableMajorGenres(majorGenreData.data.majorGenres);
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
+
+  // TODO: refactor when data model is updated to pluck minor genres corresponding to selected major genre
+  async function fetchMinorGenres() {
+    try {
+      const minorGenreData: any = await API.graphql({ query: queries.minorGenres });
+      setAvailableMinorGenres(minorGenreData.data.minorGenres);
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
+
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
     const newGroup = {
       name,
@@ -51,7 +81,7 @@ const Form: React.FC<Props> = ({ setGroups }) => {
     } catch (err) {
       console.log('error: ', err);
     }
-  };
+  }
 
   return (
     <StyledForm>
@@ -74,10 +104,12 @@ const Form: React.FC<Props> = ({ setGroups }) => {
           value={majorGenre}
           onChange={(e) => setMajorGenre(e.target.value)}
         >
-          <option value="Pop">Pop</option>
-          <option value="Rock">Rock</option>
-          <option value="Hip Hop">Hip Hop</option>
-          <option value="Classical">Classical</option>
+          {availableMajorGenres.length &&
+            availableMajorGenres.map((genre) => (
+              <option key={genre.id} value={genre.id}>
+                {genre.name}
+              </option>
+            ))}
         </select>
       </label>
       <label htmlFor="minor-genre-select">
@@ -87,10 +119,12 @@ const Form: React.FC<Props> = ({ setGroups }) => {
           value={minorGenre}
           onChange={(e) => setMinorGenre(e.target.value)}
         >
-          <option value="Jazz">Jazz</option>
-          <option value="Punk">Punk</option>
-          <option value="Indie">Indie</option>
-          <option value="Folk">Folk</option>
+          {availableMinorGenres.length &&
+            availableMinorGenres.map((genre) => (
+              <option key={genre.id} value={genre.id}>
+                {genre.name}
+              </option>
+            ))}
         </select>
       </label>
       <label htmlFor="country-select"></label>
