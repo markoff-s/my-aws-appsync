@@ -4,17 +4,13 @@ import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { createPerson as CreatePerson } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
+import { Country } from '../types/ArtistTypes';
 
 interface Props {
   setPersons: React.Dispatch<React.SetStateAction<any>>;
 }
 
-type Country = {
-  id: string;
-  name: string;
-};
-
-// TODO: flesh out logic for adding country & groups
+// TODO: flesh out logic for adding groups
 const Form: React.FC<Props> = ({ setPersons }) => {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
