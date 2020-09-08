@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react';
 import Container from '../styled-components/Container';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Group } from '../App';
+import { Group } from '../types/ArtistTypes';
 import { link } from 'fs';
 import { person } from '../graphql/queries';
 // TODO: create update method
