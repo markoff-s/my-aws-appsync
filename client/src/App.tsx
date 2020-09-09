@@ -9,42 +9,13 @@ import theme from './styled-components/Theme';
 import Button from './styled-components/Button';
 import * as queries from './graphql/queries';
 import * as mutations from './graphql/mutations';
+import { Group, Person } from './types/ArtistTypes';
 import './scss/app.scss';
 
-export type Group = {
-  id: number;
-  name: string;
-  type: string;
-  dateFormed: string;
-  majorGenre: {
-    id: number;
-    name: string;
-  };
-  minorGenre: {
-    id: number;
-    name: string;
-  };
-  country: {
-    id: number;
-    name: string;
-  };
-  persons: [Person];
-};
-
-export type Person = {
-  id: number;
-  name: string;
-  type: string;
-  dob: string;
-  country: {
-    id: number;
-    name: string;
-  };
-  groups: [Group];
-};
+// TODO: simplify state management across app (probably Redux, for long-term scalability)
 
 const App = () => {
-  const [groups, setGroups] = useState<[Group] | []>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [persons, setPersons] = useState([]);
   const [toggleForm, setToggleForm] = useState('person');
 
@@ -53,15 +24,9 @@ const App = () => {
     fetchPersons();
   }, []);
 
-  useEffect(() => {
-    console.log('Groups: ', groups);
-    console.log('Persons: ', persons);
-  }, [groups, persons]);
-
   async function fetchGroups() {
     try {
       const groupsData: any = await API.graphql({ query: queries.groups });
-      console.log('groupsData', groupsData.data);
       setGroups(groupsData.data.groups);
     } catch (err) {
       console.log('error: ', err);
@@ -80,7 +45,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <div className="app">
-        <h2>Add and update artists</h2>
+        <h1>Grow</h1>
         <div className="app__buttons">
           <Button
             color={toggleForm === 'group' ? 'red' : ''}

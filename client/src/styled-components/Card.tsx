@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Card = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -12,6 +12,10 @@ const Container = styled.div`
   &:hover {
     box-shadow: ${(props) => props.theme.boxShadow.hover};
   }
+  /* Keep multi-line text aligned when it spills over */
+  p {
+    text-align: center;
+  }
 `;
 
-export default Container;
+export default Card;
