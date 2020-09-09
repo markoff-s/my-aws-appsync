@@ -4,7 +4,7 @@ import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { createGroup as CreateGroup } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
-import { Genre } from '../types/ArtistTypes';
+import { Genre, Person } from '../types/ArtistTypes';
 
 interface Props {
   setGroups: React.Dispatch<React.SetStateAction<any>>;
@@ -15,8 +15,6 @@ interface GroupPersonsData {
   prevState: [string];
 }
 
-// TODO: flesh out logic for adding people
-
 const Form: React.FC<Props> = ({ setGroups }) => {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
@@ -24,20 +22,52 @@ const Form: React.FC<Props> = ({ setGroups }) => {
   const [majorGenre, setMajorGenre] = useState<number | string>('');
   const [minorGenre, setMinorGenre] = useState<number | string>('');
   const [country, setCountry] = useState<number | string>('');
-  const [personVal, setPersonVal] = useState('');
+  const [personVal, setPersonVal] = useState(0);
   // const [persons, setPersons] = useState<GroupPersonsData | [string]>([]);
 
   const [availableMajorGenres, setAvailableMajorGenres] = useState<[Genre] | []>([]);
   const [availableMinorGenres, setAvailableMinorGenres] = useState<[Genre] | []>([]);
+  const [availablePersons, setAvailablePersons] = useState<[Person] | []>([]);
+  const [selectedPersons, setSelectedPersons] = useState<Person[]>([]);
 
   // TODO: add separate useEffect to update minor genres when majorGenre is changed
   useEffect(() => {
     fetchMajorGenres();
     fetchMinorGenres();
+    fetchPersons();
   }, []);
 
+  // TODO: update to find individual person by name once the relevant data is there
+  async function fetchPersons() {
+    try {
+      const personsData: any = await API.graphql({ query: queries.persons });
+      setAvailablePersons(personsData.data.persons);
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
+
+  async function addPerson(e: React.ChangeEvent<HTMLSelectElement>) {
+    const val: any = Number(e.target.value);
+    if (val) {
+      const selectedPerson = availablePersons.find((person) => person.id === val);
+      if (selectedPerson && !selectedPersons.find((person) => person.id === val)) {
+        setSelectedPersons((prevState) => {
+          const newState = [...prevState];
+          newState.push(selectedPerson);
+          return newState;
+        });
+      }
+    }
+  }
+
+  async function removePerson(id: number) {
+    setSelectedPersons((prevState) => {
+      return prevState.filter((person) => person.id !== id);
+    });
+  }
+
   async function fetchMajorGenres() {
-    console.log('fetching genres');
     try {
       const majorGenreData: any = await API.graphql({ query: queries.majorGenres });
       setAvailableMajorGenres(majorGenreData.data.majorGenres);
@@ -138,25 +168,24 @@ const Form: React.FC<Props> = ({ setGroups }) => {
         <option value="3">US</option>
       </select>
       <p>People</p>
-      {/* <input
-        type="text"
-        placeholder="Add people here"
-        value={personVal}
-        onChange={(e) => setPersonVal(e.target.value)}
-      />
-      <button
-        onClick={() => {
-          setPersons((prevState) => [...prevState, personVal]);
-          setPersonVal('');
-        }}
-      >
-        Add person
-      </button>
-      <ul>
-        {persons.map((person, idx) => (
-          <li key={idx}>{person}</li>
-        ))}
-      </ul> */}
+      {/* display current people - list with people to add */}
+      <select value={personVal} onChange={addPerson}>
+        <option value={0}>Select a person</option>
+        {availablePersons.length &&
+          availablePersons.map((person: Person) => (
+            <option value={Number(person.id)}>{person.name}</option>
+          ))}
+      </select>
+      {selectedPersons && (
+        <ul>
+          {selectedPersons.map((person: Person) => (
+            <div>
+              <li key={person.id}>{person.name}</li>
+              <button onClick={() => removePerson(person.id)}>Remove</button>
+            </div>
+          ))}
+        </ul>
+      )}
       <Button onClick={(e) => handleSubmit(e)}>Submit</Button>
     </StyledForm>
   );
