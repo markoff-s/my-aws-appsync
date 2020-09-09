@@ -22,11 +22,9 @@ const Form: React.FC<Props> = ({ setGroups }) => {
   const [majorGenre, setMajorGenre] = useState<number | string>('');
   const [minorGenre, setMinorGenre] = useState<number | string>('');
   const [country, setCountry] = useState<number | string>('');
-  const [personVal, setPersonVal] = useState(0);
-
-  const [availableMajorGenres, setAvailableMajorGenres] = useState<[Genre] | []>([]);
-  const [availableMinorGenres, setAvailableMinorGenres] = useState<[Genre] | []>([]);
-  const [availablePersons, setAvailablePersons] = useState<[Person] | []>([]);
+  const [availableMajorGenres, setAvailableMajorGenres] = useState<Genre[]>([]);
+  const [availableMinorGenres, setAvailableMinorGenres] = useState<Genre[]>([]);
+  const [availablePersons, setAvailablePersons] = useState<Person[]>([]);
   const [selectedPersons, setSelectedPersons] = useState<Person[]>([]);
 
   // TODO: add separate useEffect to update minor genres when majorGenre is changed
@@ -167,8 +165,7 @@ const Form: React.FC<Props> = ({ setGroups }) => {
         <option value="3">US</option>
       </select>
       <p>People</p>
-      {/* display current people - list with people to add */}
-      <select value={personVal} onChange={addPerson}>
+      <select value="" onChange={addPerson}>
         <option value={0}>Select a person</option>
         {availablePersons.length &&
           availablePersons.map((person: Person) => (
@@ -185,7 +182,7 @@ const Form: React.FC<Props> = ({ setGroups }) => {
           ))}
         </ul>
       )}
-      <Button onClick={(e) => handleSubmit(e)}>Submit</Button>
+      <Button onClick={handleSubmit}>Submit</Button>
     </StyledForm>
   );
 };

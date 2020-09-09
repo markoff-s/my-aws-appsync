@@ -15,7 +15,7 @@ import './scss/app.scss';
 // TODO: simplify state management across app (probably Redux, for long-term scalability)
 
 const App = () => {
-  const [groups, setGroups] = useState<[Group] | []>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
   const [persons, setPersons] = useState([]);
   const [toggleForm, setToggleForm] = useState('person');
 
