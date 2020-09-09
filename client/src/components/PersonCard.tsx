@@ -1,8 +1,8 @@
 import React, { useState, Fragment } from 'react';
-import Container from '../styled-components/Container';
+import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Person } from '../App';
+import { Person } from '../types/ArtistTypes';
 // TODO: create update method
 // TODO: create delete method
 // import { } from '../graphql/mutations';
@@ -62,7 +62,7 @@ const PersonCard: React.FC<PersonProps> = ({ person, setPersons }) => {
   };
 
   return (
-    <Container>
+    <Card>
       {toggleUpdatePerson ? (
         <Fragment>
           <input type="text" value={updateName} onChange={(e) => setUpdateName(e.target.value)} />
@@ -105,7 +105,7 @@ const PersonCard: React.FC<PersonProps> = ({ person, setPersons }) => {
           </Button>
         </Fragment>
       )}
-    </Container>
+    </Card>
   );
 };
 
