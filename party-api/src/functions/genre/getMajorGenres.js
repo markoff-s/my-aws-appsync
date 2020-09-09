@@ -1,24 +1,23 @@
-'use strict';
+exports.getMajorGenres = async (event, context, callback) => {
+	// TODO: use connection pools or lambda db proxy
+	const { Client } = require('pg');  //  Needs the nodePostgres Lambda Layer.
+	
+	const env = process.env;
+	const client = new Client({
+		user: env.USER,
+		password: env.PASSWORD,
+		host: env.HOST,
+		port: env.PORT,
+		database: env.DATABASE,
+	});
+	await client.connect();
 
-exports.getMajorGenres = (event, context, callback) => {
-	console.log('Received event {}', JSON.stringify(event, 3));
+	const data = await client.query(`
+	  select id, name
+	  from mydb.public.major_genre
+	  order by name asc;
+	`);
+	await client.end();
 
-	console.log('Got an Invoke Request.');
-
-	const majorGenres = [
-		{
-			id: 1,
-			name: "Blues"
-		},
-		{
-			id: 2,
-			name: "Jazz"
-		},
-		{
-			id: 3,
-			name: "Rock"
-		},
-	]
-
-	callback(null, majorGenres);
+	callback(null, data.rows);
 };

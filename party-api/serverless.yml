@@ -35,6 +35,7 @@ provider:
     HOST: ${self:custom.dbCreds.host}
     PORT: ${self:custom.dbCreds.port}
     DATABASE: ${self:custom.dbCreds.dbname}
+    NODE_PATH: "./:/opt/node_modules"
 
 functions:
   getAuthors:
@@ -42,16 +43,18 @@ functions:
   getBooks:
     handler: src/functions/books/getBooks.getBooks
   getCountries:
-    handler: src/functions/country/getCountries.getCountries
-    environment:
-     NODE_PATH: "./:/opt/node_modules"
+    handler: src/functions/country/getCountries.getCountries    
     layers:
       # - {Ref: NodePostgresLambdaLayer}
-      - arn:aws:lambda:us-east-1:454247646323:layer:NodePostgresLayer:2
+      - ${self:custom.lambdaLayers.nodePostgres}
   getMajorGenres:
     handler: src/functions/genre/getMajorGenres.getMajorGenres
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
   getMinorGenres:
-    handler: src/functions/genre/getMinorGenres.getMinorGenres  
+    handler: src/functions/genre/getMinorGenres.getMinorGenres
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
     
 # layers:
 #   nodePostgres:
@@ -60,6 +63,8 @@ functions:
 custom:
   accountId: #{AWS::AccountId}  
   stage: ${opt:stage, 'dev'}
+  lambdaLayers:
+    nodePostgres: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:layer:NodePostgresLayer:2
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables/#reference-variables-using-aws-secrets-manager
   dbCreds: ${ssm:/aws/reference/secretsmanager/mydb-postgres~true}
   output:
