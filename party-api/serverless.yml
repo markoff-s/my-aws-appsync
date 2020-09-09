@@ -19,6 +19,12 @@ provider:
   runtime: nodejs12.x
   profile: default
   region: ${opt:region, 'us-east-1'}
+  environment: # Service wide environment variables
+    USER: ${self:custom.dbCreds.username}
+    PASSWORD: ${self:custom.dbCreds.password}
+    HOST: ${self:custom.dbCreds.host}
+    PORT: ${self:custom.dbCreds.port}
+    DATABASE: ${self:custom.dbCreds.dbname}
 
 functions:
   getAuthors:
@@ -41,6 +47,7 @@ layers:
 custom:
   accountId: #{AWS::AccountId}  
   stage: ${opt:stage, 'dev'}
+  dbCreds: ${ssm:/aws/reference/secretsmanager/mydb-postgres~true}
   output:
     file: ../client/src/stack.json
   appSync:

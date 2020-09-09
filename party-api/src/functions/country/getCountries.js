@@ -1,25 +1,29 @@
 exports.getCountries = async (event, context, callback) => {
 
-	// Load the AWS SDK
-	var AWS = require('aws-sdk'),
-		region = "us-east-1",
-		secretName = "mydb-postgres";
+	// // Load the AWS SDK
+	// var AWS = require('aws-sdk'),
+	// 	region = "us-east-1",
+	// 	secretName = "mydb-postgres";
 
-	// Create a Secrets Manager client
-	var smClient = new AWS.SecretsManager({
-		region: region
-	});
-	const smData = await smClient.getSecretValue({ SecretId: secretName }).promise();
-	const secret = JSON.parse(smData.SecretString);
+	// // Create a Secrets Manager client
+	// var smClient = new AWS.SecretsManager({
+	// 	region: region
+	// });
+	// const smData = await smClient.getSecretValue({ SecretId: secretName }).promise();
+	// const secret = JSON.parse(smData.SecretString);
+
+	// const { Client } = require('pg');  //  Needs the nodePostgres Lambda Layer.
+	// const client = new Client({
+	// 	user: secret.username,
+	// 	host: secret.host,
+	// 	database: secret.dbname,
+	// 	password: secret.password,
+	// 	port: secret.port,
+	// });
+
 
 	const { Client } = require('pg');  //  Needs the nodePostgres Lambda Layer.
-	const client = new Client({
-		user: secret.username,
-		host: secret.host,
-		database: secret.dbname,
-		password: secret.password,
-		port: secret.port,
-	});
+	const client = new Client(process.env);
 	await client.connect();
 
 	const data = await client.query(`
