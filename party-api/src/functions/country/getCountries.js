@@ -23,7 +23,15 @@ exports.getCountries = async (event, context, callback) => {
 
 
 	const { Client } = require('pg');  //  Needs the nodePostgres Lambda Layer.
-	const client = new Client(process.env);
+	console.log(process.env);
+	const env = process.env;
+	const client = new Client({
+		user: env.USER,
+		password: env.PASSWORD,
+		host: env.HOST,
+		port: env.PORT,
+		database: env.DATABASE,
+	});
 	await client.connect();
 
 	const data = await client.query(`
@@ -33,7 +41,7 @@ exports.getCountries = async (event, context, callback) => {
 	`);
 	await client.end();
 
-	callback(null, { rows: data.rows });
+	callback(null, data.rows);
 	// const response = {
 	// 	statusCode: 200,
 	// 	body: {
