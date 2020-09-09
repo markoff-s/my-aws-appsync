@@ -52,3 +52,38 @@ Resources:
                   # - "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:custom.stage}-getAuthors:*"
                   # - "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:custom.stage}-getBooks"
                   # - "arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:custom.stage}-getBooks:*"
+  LambdaDefaultExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "Lambda-Execution-${self:service}-${self:custom.stage}-Role"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: "Lambda-SecretsManager-${self:service}-${self:custom.stage}-Policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "secretsmanager:GetSecretValue"
+                Resource:
+                  - "arn:aws:secretsmanager:#{AWS::Region}:#{AWS::AccountId}:secret:mydb-postgres-6jsSzm"
+        - PolicyName: "Lambda-CloudWatch-${self:service}-${self:custom.stage}-Policy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "logs:CreateLogStream"
+                  - "logs:CreateLogGroup"
+                  - "logs:PutLogEvents"
+                Resource:                  
+                  # - "arn:aws:logs:us-east-1:454247646323:log-group:/aws/lambda/party-api-dev*:*"
+                  - "arn:aws:logs:#{AWS::Region}:#{AWS::AccountId}:log-group:/aws/lambda/${self:service}-${self:custom.stage}*:*"

@@ -1,3 +1,4 @@
+# https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml/
 service: party-api
 
 plugins:
@@ -19,6 +20,7 @@ provider:
   runtime: nodejs12.x
   profile: default
   region: ${opt:region, 'us-east-1'}
+  role: { Fn::GetAtt: [LambdaDefaultExecutionRole, Arn] }
   environment: # Service wide environment variables
     USER: ${self:custom.dbCreds.username}
     PASSWORD: ${self:custom.dbCreds.password}
