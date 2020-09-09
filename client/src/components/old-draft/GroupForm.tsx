@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import StyledForm from '../styled-components/Form';
-import Button from '../styled-components/Button';
+import StyledForm from '../../styled-components/Form';
+import Button from '../../styled-components/Button';
 import API from '@aws-amplify/api';
-import { createGroup as CreateGroup } from '../graphql/mutations';
-import * as queries from '../graphql/queries';
-import { Genre, Person } from '../types/ArtistTypes';
+import { createGroup as CreateGroup } from '../../graphql/mutations';
+import * as queries from '../../graphql/queries';
+import { Genre, Person } from '../../types/ArtistTypes';
 
 interface Props {
   setGroups: React.Dispatch<React.SetStateAction<any>>;

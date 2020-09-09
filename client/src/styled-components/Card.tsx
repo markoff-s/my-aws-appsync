@@ -5,17 +5,13 @@ const Card = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  padding: 2rem;
+  width: 100%;
+  padding: 1rem;
   box-shadow: ${(props) => props.theme.boxShadow.default};
   transition: ${(props) => props.theme.boxShadow.transition};
-  &:hover {
+  /* &:hover {
     box-shadow: ${(props) => props.theme.boxShadow.hover};
-  }
-  /* Keep multi-line text aligned when it spills over */
-  p {
-    text-align: center;
-  }
+  } */
 `;
 
 export default Card;
