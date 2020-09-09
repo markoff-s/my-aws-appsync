@@ -5,10 +5,14 @@ plugins:
    - serverless-pseudo-parameters
    - serverless-stack-output
 
-package:
-  exclude:
-    - ./node_modules/**
-    - node_modules/**
+# 1. layers? knex as a layer?
+# 2. include layer node_modules
+# 3. pass db user/pwd as env vars or config file? example?
+# package:
+#   exclude:
+#     - node_modules/**
+#   include:
+#     - node-postgres/**
 
 provider:
   name: aws
@@ -23,10 +27,16 @@ functions:
     handler: src/functions/books/getBooks.getBooks
   getCountries:
     handler: src/functions/country/getCountries.getCountries
+    layers:
+      - {Ref: NodePostgresLambdaLayer}
   getMajorGenres:
     handler: src/functions/genre/getMajorGenres.getMajorGenres
   getMinorGenres:
-    handler: src/functions/genre/getMinorGenres.getMinorGenres
+    handler: src/functions/genre/getMinorGenres.getMinorGenres  
+    
+layers:
+  nodePostgres:
+    path: resources/layers/node-postgres
 
 custom:
   accountId: #{AWS::AccountId}  
