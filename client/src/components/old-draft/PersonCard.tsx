@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import Card from '../styled-components/Card';
-import Button from '../styled-components/Button';
+import Card from '../../styled-components/Card';
+import Button from '../../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Person, Group, Country } from '../types/ArtistTypes';
-import * as mutations from '../graphql/mutations';
-import * as queries from '../graphql/queries';
+import { Person, Group, Country } from '../../types/ArtistTypes';
+import * as mutations from '../../graphql/mutations';
+import * as queries from '../../graphql/queries';
 
 interface PersonProps {
   person: Person;
@@ -101,23 +101,23 @@ const PersonCard: React.FC<PersonProps> = ({ person, setPersons }) => {
       return personsCopy;
     });
 
-    try {
-      await API.graphql({
-        query: mutations.updateGroup,
-        variables: {
-          input: {
-            name: updatedName,
-            type: updatedType,
-            dob: updatedDateOfBirth,
-            country: updatedCountry,
-            groups: updatedGroups,
-          },
-        },
-      });
-      console.log('Successfully updated artist');
-    } catch (err) {
-      console.log('error: ', err);
-    }
+    // try {
+    //   await API.graphql({
+    //     query: mutations.updateGroup,
+    //     variables: {
+    //       input: {
+    //         name: updatedName,
+    //         type: updatedType,
+    //         dob: updatedDateOfBirth,
+    //         country: updatedCountry,
+    //         groups: updatedGroups,
+    //       },
+    //     },
+    //   });
+    //   console.log('Successfully updated artist');
+    // } catch (err) {
+    //   console.log('error: ', err);
+    // }
     setToggleUpdatePerson(false);
   }
 

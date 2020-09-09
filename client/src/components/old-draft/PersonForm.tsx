@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import StyledForm from '../styled-components/Form';
-import Button from '../styled-components/Button';
+import StyledForm from '../../styled-components/Form';
+import Button from '../../styled-components/Button';
 import API from '@aws-amplify/api';
-import { createPerson as CreatePerson } from '../graphql/mutations';
-import * as queries from '../graphql/queries';
-import { Country, Group } from '../types/ArtistTypes';
+import { createPerson as CreatePerson } from '../../graphql/mutations';
+import * as queries from '../../graphql/queries';
+import { Country, Group } from '../../types/ArtistTypes';
 
 interface Props {
   setPersons: React.Dispatch<React.SetStateAction<any>>;

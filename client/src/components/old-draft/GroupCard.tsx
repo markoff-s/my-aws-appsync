@@ -1,10 +1,9 @@
 import React, { useState, Fragment } from 'react';
-import Card from '../styled-components/Card';
-import Button from '../styled-components/Button';
+import Card from '../../styled-components/Card';
+import Button from '../../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Group } from '../types/ArtistTypes';
-import { link } from 'fs';
-import { person } from '../graphql/queries';
+import { Group } from '../../types/ArtistTypes';
+import { person } from '../../graphql/queries';
 // TODO: create update method
 // TODO: create delete method
 // import { } from '../graphql/mutations';
