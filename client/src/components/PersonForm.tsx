@@ -4,7 +4,7 @@ import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { createPerson as CreatePerson } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
-import { Country } from '../types/ArtistTypes';
+import { Country, Group } from '../types/ArtistTypes';
 
 interface Props {
   setPersons: React.Dispatch<React.SetStateAction<any>>;
@@ -16,11 +16,13 @@ const Form: React.FC<Props> = ({ setPersons }) => {
   const [type, setType] = useState('');
   const [dob, setDob] = useState('');
   const [country, setCountry] = useState<number | string>('');
-  // const [groups, setGroups] = useState()
-  const [availableCountries, setAvailableCountries] = useState<[Country] | []>([]);
+  const [availableCountries, setAvailableCountries] = useState<Country[]>([]);
+  const [availableGroups, setAvailableGroups] = useState<Group[]>();
+  const [selectedGroups, setSelectedGroups] = useState<Group[]>([]);
 
   useEffect(() => {
     fetchCountries();
+    fetchGroups();
   }, []);
 
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -36,6 +38,35 @@ const Form: React.FC<Props> = ({ setPersons }) => {
     } catch (err) {
       console.log('error: ', err);
     }
+  }
+
+  async function fetchGroups() {
+    try {
+      const groupsData: any = await API.graphql({ query: queries.groups });
+      setAvailableGroups(groupsData.data.groups);
+    } catch (err) {
+      console.log('err: ', err);
+    }
+  }
+
+  async function addGroup(e: React.ChangeEvent<HTMLSelectElement>) {
+    const val = Number(e.target.value);
+    if (val && availableGroups) {
+      const selectedGroup = availableGroups.find((group) => group.id === val);
+      if (selectedGroup && !selectedGroups.find((group) => group.id === val)) {
+        setSelectedGroups((prevState) => {
+          const newState = [...prevState];
+          newState.push(selectedGroup);
+          return newState;
+        });
+      }
+    }
+  }
+
+  async function removeGroup(id: number) {
+    setSelectedGroups((prevState) => {
+      return prevState.filter((group) => group.id !== id);
+    });
   }
 
   async function fetchCountries() {
@@ -75,7 +106,24 @@ const Form: React.FC<Props> = ({ setPersons }) => {
             </option>
           ))}
       </select>
-      <Button onClick={(e) => handleSubmit(e)}>Submit</Button>
+      <select value="" onChange={addGroup}>
+        <option value={0}>Select a Group</option>
+        {availableGroups &&
+          availableGroups.map((group: Group) => (
+            <option value={Number(group.id)}>{group.name}</option>
+          ))}
+      </select>
+      {selectedGroups && (
+        <ul>
+          {selectedGroups.map((group: Group) => (
+            <div>
+              <li key={group.id}>{group.name}</li>
+              <button onClick={() => removeGroup(group.id)}>Remove</button>
+            </div>
+          ))}
+        </ul>
+      )}
+      <Button onClick={handleSubmit}>Submit</Button>
     </StyledForm>
   );
 };
