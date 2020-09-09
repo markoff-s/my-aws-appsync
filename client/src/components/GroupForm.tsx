@@ -23,7 +23,6 @@ const Form: React.FC<Props> = ({ setGroups }) => {
   const [minorGenre, setMinorGenre] = useState<number | string>('');
   const [country, setCountry] = useState<number | string>('');
   const [personVal, setPersonVal] = useState(0);
-  // const [persons, setPersons] = useState<GroupPersonsData | [string]>([]);
 
   const [availableMajorGenres, setAvailableMajorGenres] = useState<[Genre] | []>([]);
   const [availableMinorGenres, setAvailableMinorGenres] = useState<[Genre] | []>([]);
