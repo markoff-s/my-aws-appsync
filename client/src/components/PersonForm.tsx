@@ -98,7 +98,7 @@ const Form: React.FC<Props> = ({ setPersons }) => {
         value={dob}
         onChange={(e) => setDob(e.target.value)}
       />
-      <select value={country} onChange={(e) => setType(e.target.value)}>
+      <select value={country} onChange={(e) => setCountry(e.target.value)}>
         {availableCountries.length &&
           availableCountries.map((country: Country) => (
             <option key={country.id} value={country.id}>

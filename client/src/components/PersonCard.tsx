@@ -1,11 +1,10 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Person } from '../types/ArtistTypes';
-// TODO: create update method
-// TODO: create delete method
-// import { } from '../graphql/mutations';
+import { Person, Group, Country } from '../types/ArtistTypes';
+import * as mutations from '../graphql/mutations';
+import * as queries from '../graphql/queries';
 
 interface PersonProps {
   person: Person;
@@ -15,13 +14,17 @@ interface PersonProps {
 const PersonCard: React.FC<PersonProps> = ({ person, setPersons }) => {
   const { id, name, type, dob, country, groups } = person;
   const [toggleUpdatePerson, setToggleUpdatePerson] = useState(false);
-  const [updateName, setUpdateName] = useState(name);
-  const [updateType, setUpdateType] = useState(type);
-  const [updateDateOfBirth, setUpdateDateOfBirth] = useState(dob);
-  const [updateCountry, setUpdateCountry] = useState(country.name);
-  const [updateGroups, setUpdateGroups] = useState(groups);
+  const [updatedName, setUpdatedName] = useState(name);
+  const [updatedType, setUpdatedType] = useState(type);
+  const [updatedDateOfBirth, setUpdatedDateOfBirth] = useState(dob);
+  const [updatedCountry, setUpdatedCountry] = useState(country);
+  const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
+
+  const [availableCountries, setAvailableCountries] = useState<Country[]>([]);
+  const [availableGroups, setAvailableGroups] = useState<Group[]>();
 
   // TODO: add delete to schema
+
   // const handleDelete = async (id: string) => {
   //   setArtists((prevState: any) => prevState.filter((artist: any) => artist.id !== id));
   //   try {
@@ -31,59 +34,139 @@ const PersonCard: React.FC<PersonProps> = ({ person, setPersons }) => {
   //     console.log('error: ', err);
   //   }
   // };
+  // TODO: Add GraphQL update mutation
 
-  // const handleUpdate = async (id: string) => {
-  //   setArtists((prevState: any) => {
-  //     const editedArtist = prevState.find((artist: any) => artist.id === id);
-  //     editedArtist.name = updateArtistName;
-  //     editedArtist.description = updateArtistDescription;
-  //     return [...prevState];
-  //   });
+  useEffect(() => {
+    fetchCountries();
+    fetchGroups();
+  }, []);
 
-  //   try {
-  //     await API.graphql({
-  //       query: UpdateArtist,
-  //       variables: { input: { id, name: updateArtistName, description: updateArtistDescription } },
-  //     });
-  //     console.log('Successfully updated artist');
-  //   } catch (err) {
-  //     console.log('error: ', err);
-  //   }
-  //   setToggleUpdateArtist(false);
-  // };
+  async function fetchGroups() {
+    try {
+      const groupsData: any = await API.graphql({ query: queries.groups });
+      setAvailableGroups(groupsData.data.groups);
+    } catch (err) {
+      console.log('err: ', err);
+    }
+  }
+
+  async function addGroup(e: React.ChangeEvent<HTMLSelectElement>) {
+    const val = Number(e.target.value);
+    if (val && availableGroups) {
+      const updatedGroup = availableGroups.find((group) => group.id === val);
+      if (updatedGroup && !updatedGroups.find((group) => group.id === val)) {
+        setUpdatedGroups((prevState) => {
+          const newState = [...prevState];
+          newState.push(updatedGroup);
+          return newState;
+        });
+      }
+    }
+  }
+
+  async function removeGroup(id: number) {
+    setUpdatedGroups((prevState) => {
+      return prevState.filter((group) => group.id !== id);
+    });
+  }
+
+  async function fetchCountries() {
+    try {
+      const countryData: any = await API.graphql({ query: queries.countries });
+      setAvailableCountries(countryData.data.countries);
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
+
+  async function handleUpdateCountry(e: React.ChangeEvent<HTMLSelectElement>) {
+    const val = Number(e.target.value);
+    const newCountry = availableCountries.find((country) => country.id == val);
+    if (newCountry) setUpdatedCountry(newCountry);
+  }
+
+  async function handleUpdate(id: number) {
+    setPersons((prevState: Person[]) => {
+      const updateIdx = prevState.findIndex((person: Person) => person.id === id);
+      const updatedPerson = { ...prevState[updateIdx] };
+      updatedPerson.name = updatedName;
+      updatedPerson.type = updatedType;
+      updatedPerson.dob = updatedDateOfBirth;
+      updatedPerson.country = updatedCountry;
+      updatedPerson.groups = updatedGroups;
+
+      const personsCopy = [...prevState];
+      personsCopy[updateIdx] = updatedPerson;
+
+      return personsCopy;
+    });
+
+    try {
+      await API.graphql({
+        query: mutations.updateGroup,
+        variables: {
+          input: {
+            name: updatedName,
+            type: updatedType,
+            dob: updatedDateOfBirth,
+            country: updatedCountry,
+            groups: updatedGroups,
+          },
+        },
+      });
+      console.log('Successfully updated artist');
+    } catch (err) {
+      console.log('error: ', err);
+    }
+    setToggleUpdatePerson(false);
+  }
 
   const handleUpdateToggle = () => {
     setToggleUpdatePerson((prevState) => !prevState);
-    setUpdateName(name);
-    setUpdateType(type);
-    setUpdateDateOfBirth(dob);
-    setUpdateCountry(country.name);
-    setUpdateGroups(groups);
+    setUpdatedName(name);
+    setUpdatedType(type);
+    setUpdatedDateOfBirth(dob);
+    setUpdatedCountry(country);
+    setUpdatedGroups(groups);
   };
 
   return (
     <Card>
       {toggleUpdatePerson ? (
         <Fragment>
-          <input type="text" value={updateName} onChange={(e) => setUpdateName(e.target.value)} />
-          <input type="text" value={updateType} onChange={(e) => setUpdateType(e.target.value)} />
+          <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
+          <input type="text" value={updatedType} onChange={(e) => setUpdatedType(e.target.value)} />
           <input
             type="date"
-            value={updateDateOfBirth}
-            onChange={(e) => setUpdateDateOfBirth(e.target.value)}
+            value={updatedDateOfBirth}
+            onChange={(e) => setUpdatedDateOfBirth(e.target.value)}
           />
-          <input
-            type="text"
-            value={updateCountry}
-            onChange={(e) => setUpdateCountry(e.target.value)}
-          />
-
-          <ul>
-            {groups.map((group) => (
-              <li key={group.id}>{group.name}</li>
-            ))}
-          </ul>
-          <Button onClick={() => {}}>Submit Changes</Button>
+          <select value={updatedCountry.id} onChange={handleUpdateCountry}>
+            {availableCountries.length &&
+              availableCountries.map((country: Country) => (
+                <option key={country.id} value={country.id}>
+                  {country.name}
+                </option>
+              ))}
+          </select>
+          <select value="" onChange={addGroup}>
+            <option value={0}>Select a Group</option>
+            {availableGroups &&
+              availableGroups.map((group: Group) => (
+                <option value={Number(group.id)}>{group.name}</option>
+              ))}
+          </select>
+          {updatedGroups && (
+            <ul>
+              {updatedGroups.map((group: Group) => (
+                <div>
+                  <li key={group.id}>{group.name}</li>
+                  <button onClick={() => removeGroup(group.id)}>Remove</button>
+                </div>
+              ))}
+            </ul>
+          )}
+          <Button onClick={() => handleUpdate(id)}>Submit Changes</Button>
           <Button color={'red'} onClick={handleUpdateToggle}>
             Cancel Edit
           </Button>

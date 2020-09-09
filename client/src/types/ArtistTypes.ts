@@ -1,10 +1,10 @@
 export type Country = {
-  id: string;
+  id: number;
   name: string;
 };
 
 export type Genre = {
-  id: string;
+  id: number;
   name: string;
 };
 
@@ -25,7 +25,7 @@ export type Group = {
     id: number;
     name: string;
   };
-  persons: [Person];
+  persons: Person[];
 };
 
 export type Person = {
@@ -37,5 +37,5 @@ export type Person = {
     id: number;
     name: string;
   };
-  groups: [Group];
+  groups: Group[];
 };
