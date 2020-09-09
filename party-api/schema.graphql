@@ -7,7 +7,7 @@ type Query {
 	countries: [Country!]!
 	majorGenres: [MajorGenre!]!
 	minorGenres: [MinorGenre!]!
-	persons: [Person!]!
+	artists: [Person!]!
 	person(id: Int!): Person
 	groups: [Group!]!
 	group(id: Int!): Group
@@ -41,7 +41,7 @@ type Person {
 	name: String!
 	type: PersonType!
 	dob: String!
-	country: Country!
+	country: Country
 	groups: [Group!]
 }
 

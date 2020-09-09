@@ -55,6 +55,10 @@ functions:
     handler: src/functions/genre/getMinorGenres.getMinorGenres
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  getArtists:
+    handler: src/functions/artist/getArtists.getArtists
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
     
 # layers:
 #   nodePostgres:
@@ -104,6 +108,10 @@ custom:
         type: Query
         field: minorGenres        
         response: false
+      - dataSource: getArtistsDS
+        type: Query
+        field: artists        
+        response: false
     schema: schema.graphql
     dataSources:      
       - type: AWS_LAMBDA
@@ -130,6 +138,11 @@ custom:
         name: getMinorGenresDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetMinorGenresLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getArtistsDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetArtistsLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
 
 
