@@ -23,7 +23,7 @@ exports.getCountries = async (event, context, callback) => {
 
 
 	const { Client } = require('pg');  //  Needs the nodePostgres Lambda Layer.
-	console.log(process.env);
+	// console.log(process.env);
 	const env = process.env;
 	const client = new Client({
 		user: env.USER,

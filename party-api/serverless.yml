@@ -6,14 +6,22 @@ plugins:
    - serverless-pseudo-parameters
    - serverless-stack-output
 
+# lambda layers
+# https://epsagon.com/development/aws-lambda-layers-getting-started-guide/#:~:text=Lambda%20Layers%20are%20a%20pretty,and%20managed%20by%20third%20parties
+# https://www.serverless.com/framework/docs/providers/aws/guide/layers/
 # 1. layers? knex as a layer?
 # 2. include layer node_modules
-# 3. pass db user/pwd as env vars or config file? example?
+# NOTE: I wasn't able to exclude party-api node_modules and include node-postgres layer node_modules,
+# all or nothing is included
 # package:
 #   exclude:
 #     - node_modules/**
 #   include:
 #     - node-postgres/**
+
+package:
+  exclude:
+    - node_modules/**
 
 provider:
   name: aws
@@ -35,20 +43,24 @@ functions:
     handler: src/functions/books/getBooks.getBooks
   getCountries:
     handler: src/functions/country/getCountries.getCountries
+    environment:
+     NODE_PATH: "./:/opt/node_modules"
     layers:
-      - {Ref: NodePostgresLambdaLayer}
+      # - {Ref: NodePostgresLambdaLayer}
+      - arn:aws:lambda:us-east-1:454247646323:layer:NodePostgresLayer:2
   getMajorGenres:
     handler: src/functions/genre/getMajorGenres.getMajorGenres
   getMinorGenres:
     handler: src/functions/genre/getMinorGenres.getMinorGenres  
     
-layers:
-  nodePostgres:
-    path: resources/layers/node-postgres
+# layers:
+#   nodePostgres:
+#     path: resources/layers/node-postgres
 
 custom:
   accountId: #{AWS::AccountId}  
   stage: ${opt:stage, 'dev'}
+  # https://www.serverless.com/framework/docs/providers/aws/guide/variables/#reference-variables-using-aws-secrets-manager
   dbCreds: ${ssm:/aws/reference/secretsmanager/mydb-postgres~true}
   output:
     file: ../client/src/stack.json
