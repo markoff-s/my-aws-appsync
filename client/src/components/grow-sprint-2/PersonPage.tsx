@@ -13,16 +13,17 @@ interface PersonProps {
 }
 
 const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack }) => {
-  const { id, name, type, dob, country, groups } = person;
+  const { id, name, type, dob } = person;
+  const country = { id: 73, name: 'China' };
   const [toggleUpdatePerson, setToggleUpdatePerson] = useState(false);
   const [updatedName, setUpdatedName] = useState(name);
   const [updatedType, setUpdatedType] = useState(type);
   const [updatedDateOfBirth, setUpdatedDateOfBirth] = useState(dob);
   const [updatedCountry, setUpdatedCountry] = useState(country);
-  const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
+  // const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
 
   const [availableCountries, setAvailableCountries] = useState<Country[]>([]);
-  const [availableGroups, setAvailableGroups] = useState<Group[]>();
+  // const [availableGroups, setAvailableGroups] = useState<Group[]>();
 
   // TODO: add delete to schema
 
@@ -39,37 +40,37 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
 
   useEffect(() => {
     fetchCountries();
-    fetchGroups();
+    // fetchGroups();
   }, []);
 
-  async function fetchGroups() {
-    try {
-      const groupsData: any = await API.graphql({ query: queries.groups });
-      setAvailableGroups(groupsData.data.groups);
-    } catch (err) {
-      console.log('err: ', err);
-    }
-  }
+  // async function fetchGroups() {
+  //   try {
+  //     const groupsData: any = await API.graphql({ query: queries.groups });
+  //     setAvailableGroups(groupsData.data.groups);
+  //   } catch (err) {
+  //     console.log('err: ', err);
+  //   }
+  // }
 
-  async function addGroup(e: React.ChangeEvent<HTMLSelectElement>) {
-    const val = Number(e.target.value);
-    if (val && availableGroups) {
-      const updatedGroup = availableGroups.find((group) => group.id === val);
-      if (updatedGroup && !updatedGroups.find((group) => group.id === val)) {
-        setUpdatedGroups((prevState) => {
-          const newState = [...prevState];
-          newState.push(updatedGroup);
-          return newState;
-        });
-      }
-    }
-  }
+  // async function addGroup(e: React.ChangeEvent<HTMLSelectElement>) {
+  //   const val = Number(e.target.value);
+  //   if (val && availableGroups) {
+  //     const updatedGroup = availableGroups.find((group) => group.id === val);
+  //     if (updatedGroup && !updatedGroups.find((group) => group.id === val)) {
+  //       setUpdatedGroups((prevState) => {
+  //         const newState = [...prevState];
+  //         newState.push(updatedGroup);
+  //         return newState;
+  //       });
+  //     }
+  //   }
+  // }
 
-  async function removeGroup(id: number) {
-    setUpdatedGroups((prevState) => {
-      return prevState.filter((group) => group.id !== id);
-    });
-  }
+  // async function removeGroup(id: number) {
+  //   setUpdatedGroups((prevState) => {
+  //     return prevState.filter((group) => group.id !== id);
+  //   });
+  // }
 
   async function fetchCountries() {
     try {
@@ -94,7 +95,7 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
       updatedPerson.type = updatedType;
       updatedPerson.dob = updatedDateOfBirth;
       updatedPerson.country = updatedCountry;
-      updatedPerson.groups = updatedGroups;
+      // updatedPerson.groups = updatedGroups;
 
       const personsCopy = [...prevState];
       personsCopy[updateIdx] = updatedPerson;
@@ -128,7 +129,7 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
     setUpdatedType(type);
     setUpdatedDateOfBirth(dob);
     setUpdatedCountry(country);
-    setUpdatedGroups(groups);
+    // setUpdatedGroups(groups);
   };
 
   return (
@@ -151,7 +152,7 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
                 </option>
               ))}
           </select>
-          <select value="" onChange={addGroup}>
+          {/* <select value="" onChange={addGroup}>
             <option value={0}>Select a Group</option>
             {availableGroups &&
               availableGroups.map((group: Group) => (
@@ -167,9 +168,9 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
                 </div>
               ))}
             </ul>
-          )}
+          )} */}
           <Button onClick={() => handleUpdate(id)}>Submit Changes</Button>
-          <Button color={'red'} onClick={handleUpdateToggle}>
+          <Button color={'light'} onClick={handleUpdateToggle}>
             Cancel Edit
           </Button>
         </Fragment>
@@ -179,13 +180,13 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
           <p>{type}</p>
           <p>{dob}</p>
           <p>{country.name}</p>
-          <ul>
+          {/* <ul>
             {groups.map((group) => (
               <li key={group.id}>{group.name}</li>
             ))}
-          </ul>
+          </ul> */}
           <Button onClick={handleUpdateToggle}>Edit Artist Info</Button>
-          <Button color={'red'} onClick={() => {}}>
+          <Button color={'light'} onClick={() => {}}>
             Delete
           </Button>
         </Fragment>
