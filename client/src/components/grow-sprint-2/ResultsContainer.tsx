@@ -7,9 +7,17 @@ interface Props {
   filteredGroups: Group[];
   filteredPersons: Person[];
   displayResults: boolean;
+  handleDisplayGroup: (group: Group) => void;
+  handleDisplayPerson: (person: Person) => void;
 }
 
-const ResultsContainer: React.FC<Props> = ({ filteredGroups, filteredPersons, displayResults }) => {
+const ResultsContainer: React.FC<Props> = ({
+  filteredGroups,
+  filteredPersons,
+  displayResults,
+  handleDisplayGroup,
+  handleDisplayPerson,
+}) => {
   const filteredGroupResults = filteredGroups.map((group) => (
     <Result
       key={`${group.id}-${group.name}`}
@@ -17,6 +25,7 @@ const ResultsContainer: React.FC<Props> = ({ filteredGroups, filteredPersons, di
       type={group.type}
       country={group.country.name}
       comments="Awesome group"
+      onClick={() => handleDisplayGroup(group)}
     />
   ));
   const filteredPersonResults = filteredPersons.map((person) => (
@@ -26,6 +35,7 @@ const ResultsContainer: React.FC<Props> = ({ filteredGroups, filteredPersons, di
       type={person.type}
       country={person.country.name}
       comments="Awesome person"
+      onClick={() => handleDisplayPerson(person)}
     />
   ));
 

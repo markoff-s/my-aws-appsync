@@ -1,5 +1,6 @@
 import React from 'react';
 import WarnerLogo from '../../assets/warnerlogo.png';
+import { AmplifySignOut } from '@aws-amplify/ui-react';
 
 const Header = () => {
   return (
@@ -8,7 +9,10 @@ const Header = () => {
         <img className="warner-logo" src={WarnerLogo} alt="Warner Music Group logo" />
         Grow / Party
       </div>
-      <div className="right">Zac Haluza</div>
+      <div className="right">
+        <p>Zac Haluza</p>
+        <AmplifySignOut />
+      </div>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Card from '../../styled-components/Card';
 import * as queries from '../../graphql/queries';
 import * as mutations from '../../graphql/mutations';
@@ -17,6 +17,10 @@ const MainContainer = () => {
   const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
   const [filteredPersons, setFilteredPersons] = useState<Person[]>([]);
   const [displayResults, setDisplayResults] = useState(false);
+  const [displayGroup, setDisplayGroup] = useState(false);
+  const [displayPerson, setDisplayPerson] = useState(false);
+  const [currentGroupData, setCurrentGroupData] = useState<Group | null>(null);
+  const [currentPersonData, setCurrentPersonData] = useState<Person | null>();
 
   // Grab all group & person data (can later refactor for scalability)
   useEffect(() => {
@@ -73,6 +77,30 @@ const MainContainer = () => {
   }
   const totalResults = filteredGroups.length + filteredPersons.length;
 
+  function handleDisplayGroup(group: Group) {
+    setCurrentGroupData(group);
+    setDisplayGroup(true);
+  }
+
+  function handleDisplayPerson(person: Person) {
+    setCurrentPersonData(person);
+    setDisplayPerson(true);
+  }
+
+  // log current person and group data
+  useEffect(() => {
+    console.log('updated person data: ', currentPersonData);
+    console.log('updated group data: ', currentGroupData);
+  }, [currentGroupData, currentPersonData]);
+
+  // switch back from artist page to main search page
+  function handleDisplayReset() {
+    setCurrentGroupData(null);
+    setCurrentPersonData(null);
+    setDisplayPerson(false);
+    setDisplayGroup(false);
+  }
+
   return (
     <div>
       <Header />
@@ -81,17 +109,37 @@ const MainContainer = () => {
         The central place for creating and managing names and IDs for our artists, participants,
         writers, producers, engineers, musicians, and other contributors.
       </p>
-      <SearchContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      {totalResults > 0 && (
-        <Card>
-          <span className="bold">{totalResults}</span> Results
-        </Card>
+      {!displayGroup && !displayPerson && (
+        <Fragment>
+          <SearchContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+          {totalResults > 0 && (
+            <Card>
+              <span className="bold">{totalResults}</span> Results
+            </Card>
+          )}
+          <ResultsContainer
+            filteredGroups={filteredGroups}
+            filteredPersons={filteredPersons}
+            displayResults={displayResults}
+            handleDisplayGroup={handleDisplayGroup}
+            handleDisplayPerson={handleDisplayPerson}
+          />
+        </Fragment>
       )}
-      <ResultsContainer
-        filteredGroups={filteredGroups}
-        filteredPersons={filteredPersons}
-        displayResults={displayResults}
-      />
+      {displayGroup && !displayPerson && currentGroupData && (
+        <GroupPage
+          group={currentGroupData}
+          setGroups={setGroups}
+          handleGoBack={handleDisplayReset}
+        />
+      )}
+      {!displayGroup && displayPerson && currentPersonData && (
+        <PersonPage
+          person={currentPersonData}
+          setPersons={setPersons}
+          handleGoBack={handleDisplayReset}
+        />
+      )}
     </div>
   );
 };
