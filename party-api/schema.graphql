@@ -8,7 +8,7 @@ type Query {
 	majorGenres: [MajorGenre!]!
 	minorGenres: [MinorGenre!]!
 	artists: [Person!]!
-	person(id: Int!): Person
+	artist(id: Int!): Person
 	groups: [Group!]!
 	group(id: Int!): Group
 

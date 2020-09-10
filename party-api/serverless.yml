@@ -59,6 +59,10 @@ functions:
     handler: src/functions/artist/getArtists.getArtists
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  getArtist:
+    handler: src/functions/artist/getArtist.getArtist
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
     
 # layers:
 #   nodePostgres:
@@ -68,7 +72,7 @@ custom:
   accountId: #{AWS::AccountId}  
   stage: ${opt:stage, 'dev'}
   lambdaLayers:
-    # this layer is stored in Slava's account and is globally shared
+    # this layer is stored in Slava's account and is globally shared https://medium.com/@zaccharles/sharing-lambda-layers-and-restricting-your-own-usage-f1413b974f44
     nodePostgres: arn:aws:lambda:us-east-1:454247646323:layer:NodePostgresLayer:2 # arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:layer:NodePostgresLayer:2
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables/#reference-variables-using-aws-secrets-manager
   dbCreds: ${ssm:/aws/reference/secretsmanager/mydb-postgres~true}
@@ -113,6 +117,10 @@ custom:
         type: Query
         field: artists        
         response: false
+      - dataSource: getArtistDS
+        type: Query
+        field: artist
+        response: false
     schema: schema.graphql
     dataSources:      
       - type: AWS_LAMBDA
@@ -144,6 +152,11 @@ custom:
         name: getArtistsDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetArtistsLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getArtistDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetArtistLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
 
 

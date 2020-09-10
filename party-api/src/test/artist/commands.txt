@@ -1,0 +1,2 @@
+# invoke locally with test payload
+slss invoke local -f getArtist --path src/test/artist/getArtist.json
