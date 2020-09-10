@@ -25,9 +25,9 @@ export const minorGenres = /* GraphQL */ `
     }
   }
 `;
-export const persons = /* GraphQL */ `
-  query Persons {
-    persons {
+export const artists = /* GraphQL */ `
+  query Artists {
+    artists {
       id
       name
       type
@@ -36,12 +36,12 @@ export const persons = /* GraphQL */ `
         id
         name
       }
-      groups {
-        id
-        name
-        type
-        dateFormed
-      }
+      # groups {
+      #   id
+      #   name
+      #   type
+      #   dateFormed
+      # }
     }
   }
 `;
