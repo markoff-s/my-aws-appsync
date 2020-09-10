@@ -1,0 +1,8 @@
+# add layer permission
+aws2 lambda add-layer-version-permission --layer-name NodePostgresLayer --version-number 2 --statement-id AllAccountsAccessToNodePostgresLayer --principal * --action lambda:GetLayerVersion
+
+# check
+aws2 lambda get-layer-version-policy --layer-name NodePostgresLayer --version-number 2
+
+# remove
+aws2 lambda remove-layer-version-permission --layer-name NodePostgresLayer --version-number 2 --statement-id AllAccountsAccessToNodePostgresLayer
