@@ -11,7 +11,7 @@ interface Props {
 }
 
 // TODO: flesh out logic for adding groups
-const Form: React.FC<Props> = ({ setPersons }) => {
+const AddArtist: React.FC<Props> = ({ setPersons }) => {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [dob, setDob] = useState('');
@@ -128,4 +128,4 @@ const Form: React.FC<Props> = ({ setPersons }) => {
   );
 };
 
-export default Form;
+export default AddArtist;

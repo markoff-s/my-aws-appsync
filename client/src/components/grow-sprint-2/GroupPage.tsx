@@ -106,7 +106,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
             ))}
           </ul>
           <Button onClick={() => {}}>Submit Changes</Button>
-          <Button color={'red'} onClick={handleUpdateToggle}>
+          <Button color={'light'} onClick={handleUpdateToggle}>
             Cancel Edit
           </Button>
         </Fragment>
@@ -125,7 +125,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
             ))}
           </ul>
           <Button onClick={handleUpdateToggle}>Edit Artist Info</Button>
-          <Button color={'red'} onClick={() => {}}>
+          <Button color={'light'} onClick={() => {}}>
             Delete
           </Button>
         </Fragment>

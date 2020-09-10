@@ -7,35 +7,35 @@ interface Props {
   filteredGroups: Group[];
   filteredPersons: Person[];
   displayResults: boolean;
-  handleDisplayGroup: (group: Group) => void;
-  handleDisplayPerson: (person: Person) => void;
+  handleDisplayGroupScreen: (group: Group) => void;
+  handleDisplayPersonScreen: (person: Person) => void;
 }
 
 const ResultsContainer: React.FC<Props> = ({
   filteredGroups,
   filteredPersons,
   displayResults,
-  handleDisplayGroup,
-  handleDisplayPerson,
+  handleDisplayGroupScreen,
+  handleDisplayPersonScreen,
 }) => {
   const filteredGroupResults = filteredGroups.map((group) => (
     <Result
       key={`${group.id}-${group.name}`}
       name={group.name}
-      type={group.type}
+      format="Band Name"
       country={group.country.name}
       comments="Awesome group"
-      onClick={() => handleDisplayGroup(group)}
+      onClick={() => handleDisplayGroupScreen(group)}
     />
   ));
   const filteredPersonResults = filteredPersons.map((person) => (
     <Result
       key={`${person.id}-${person.name}`}
       name={person.name}
-      type={person.type}
-      country={person.country.name}
+      format="Artist Name"
+      country={'US'}
       comments="Awesome person"
-      onClick={() => handleDisplayPerson(person)}
+      onClick={() => handleDisplayPersonScreen(person)}
     />
   ));
 
@@ -43,7 +43,7 @@ const ResultsContainer: React.FC<Props> = ({
     <div className="results-container">
       <div className="results__categories">
         <p>Artist Name</p>
-        <p>Type</p>
+        <p>Format</p>
         <p>Country of Origin</p>
         <p>Internal Comments</p>
       </div>

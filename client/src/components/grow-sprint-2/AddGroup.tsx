@@ -15,7 +15,7 @@ interface GroupPersonsData {
   prevState: [string];
 }
 
-const Form: React.FC<Props> = ({ setGroups }) => {
+const AddGroup: React.FC<Props> = ({ setGroups }) => {
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [dateFormed, setDateFormed] = useState('');
@@ -37,7 +37,7 @@ const Form: React.FC<Props> = ({ setGroups }) => {
   // TODO: update to find individual person by name once the relevant data is there
   async function fetchPersons() {
     try {
-      const personsData: any = await API.graphql({ query: queries.persons });
+      const personsData: any = await API.graphql({ query: queries.artists });
       setAvailablePersons(personsData.data.persons);
     } catch (err) {
       console.log('error: ', err);
@@ -187,4 +187,4 @@ const Form: React.FC<Props> = ({ setGroups }) => {
   );
 };
 
-export default Form;
+export default AddGroup;
