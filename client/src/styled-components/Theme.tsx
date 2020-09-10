@@ -2,10 +2,12 @@ import { DefaultTheme } from 'styled-components';
 
 const Theme: DefaultTheme = {
   colors: {
-    ltBlue: '#3498db',
-    red: '#e74c3c',
+    btnPrimary: '#0061ab',
+    btnPrimary2: '#0261ac',
+    btnSecondary: '#f2f2f2',
     white: '#fff',
-    black: '#0a0a0a',
+    black: '#000',
+    ltBlack: '#3f3f3f',
   },
   boxShadow: {
     default: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)',
