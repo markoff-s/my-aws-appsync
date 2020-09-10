@@ -68,7 +68,8 @@ custom:
   accountId: #{AWS::AccountId}  
   stage: ${opt:stage, 'dev'}
   lambdaLayers:
-    nodePostgres: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:layer:NodePostgresLayer:2
+    # this layer is stored in Slava's account and is globally shared
+    nodePostgres: arn:aws:lambda:us-east-1:454247646323:layer:NodePostgresLayer:2 # arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:layer:NodePostgresLayer:2
   # https://www.serverless.com/framework/docs/providers/aws/guide/variables/#reference-variables-using-aws-secrets-manager
   dbCreds: ${ssm:/aws/reference/secretsmanager/mydb-postgres~true}
   output:
