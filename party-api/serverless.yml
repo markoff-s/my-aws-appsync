@@ -63,6 +63,14 @@ functions:
     handler: src/functions/artist/getArtist.getArtist
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  getGroups:
+    handler: src/functions/group/getGroups.getGroups
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
+  getGroup:
+    handler: src/functions/group/getGroup.getGroup
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
     
 # layers:
 #   nodePostgres:
@@ -121,6 +129,14 @@ custom:
         type: Query
         field: artist
         response: false
+      - dataSource: getGroupsDS
+        type: Query
+        field: groups  
+        response: false
+      - dataSource: getGroupDS
+        type: Query
+        field: group
+        response: false
     schema: schema.graphql
     dataSources:      
       - type: AWS_LAMBDA
@@ -157,6 +173,16 @@ custom:
         name: getArtistDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetArtistLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getGroupsDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetGroupsLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getGroupDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetGroupLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
 
 
