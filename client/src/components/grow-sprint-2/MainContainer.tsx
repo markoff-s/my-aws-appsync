@@ -104,9 +104,9 @@ const MainContainer = () => {
   return (
     <div>
       <Header />
-      <h1>Welcome to Party Workspace</h1>
+      <h1>Welcome to the Workspace</h1>
       <p>
-        The central place for creating and managing names and IDs for our artists, participants,
+        The central place for creating and managing names and IDs for artists, participants,
         writers, producers, engineers, musicians, and other contributors.
       </p>
       {!displayGroup && !displayPerson && (
