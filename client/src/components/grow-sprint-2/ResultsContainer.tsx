@@ -54,7 +54,7 @@ const ResultsContainer: React.FC<Props> = ({
     </div>
   ) : (
     <Card>
-      <p>Search Artists, ISNI, WMG ID</p>
+      <p>Search Artists, ISNI, ID</p>
     </Card>
   );
 };
