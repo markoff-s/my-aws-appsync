@@ -5,7 +5,6 @@ import * as queries from '../../graphql/queries';
 import * as mutations from '../../graphql/mutations';
 import API from '@aws-amplify/api';
 import { Group, Person } from '../../types/ArtistTypes';
-import Header from './Header';
 import SearchContainer from './SearchContainer';
 import ResultsContainer from './ResultsContainer';
 import GroupPage from './GroupPage';
@@ -119,7 +118,6 @@ const MainContainer = () => {
 
   return (
     <div>
-      <Header />
       <h1>Welcome to the Workspace</h1>
       <p>
         The central place for creating and managing names and IDs for artists, participants,
