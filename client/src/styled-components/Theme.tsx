@@ -1,10 +1,13 @@
 import { DefaultTheme } from 'styled-components';
 
 const Theme: DefaultTheme = {
+  font: {
+    default: 'Lato',
+  },
   colors: {
-    btnPrimary: '#0061ab',
-    btnPrimary2: '#0261ac',
-    btnSecondary: '#f2f2f2',
+    accentPrimary: '#0061ab',
+    accentPrimary2: '#0261ac',
+    accentSecondary: '#f2f2f2',
     white: '#fff',
     black: '#000',
     ltBlack: '#3f3f3f',
