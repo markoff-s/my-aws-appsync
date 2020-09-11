@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import Button from '../../styled-components/Button';
-import AddArtist from './AddArtist';
-import AddGroup from './AddGroup';
-import { Group, Person } from '../../types/ArtistTypes';
+import Button from '../styled-components/Button';
+import AddArtist from '../components/AddArtist';
+import AddGroup from '../components/AddGroup';
+import { Group, Person } from '../types/ArtistTypes';
 
 interface Props {
   handleDisplayReset: () => void;

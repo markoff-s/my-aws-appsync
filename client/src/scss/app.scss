@@ -20,19 +20,26 @@
     }
   }
 }
-
+$indentation: 1rem;
 .header {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   .header__left {
+    margin-left: $indentation;
     display: flex;
     align-items: center;
+    p {
+      color: $gray;
+    }
     img {
       width: 100px;
     }
   }
   .header__right {
+    margin-right: $indentation;
     position: relative;
     font-weight: 700;
     display: flex;
@@ -47,7 +54,7 @@
       cursor: pointer;
 
       &:hover {
-        color: blue;
+        color: $accent-primary;
       }
     }
     .header__right-bottom {

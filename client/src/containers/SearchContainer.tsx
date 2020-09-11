@@ -1,5 +1,5 @@
 import React from 'react';
-import Card from '../../styled-components/Card';
+import Card from '../styled-components/Card';
 
 interface Props {
   searchTerm: string;
