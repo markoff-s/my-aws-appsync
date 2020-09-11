@@ -24,18 +24,19 @@ const MainContainer = () => {
   const [displayAddScreen, setDisplayAddScreen] = useState(false);
   const [currentGroupData, setCurrentGroupData] = useState<Group | null>(null);
   const [currentPersonData, setCurrentPersonData] = useState<Person | null>();
-  const [error, setError] = useState(false);
 
   // Grab all group & person data (can later refactor for scalability)
   useEffect(() => {
-    fetchGroups();
+    console.log('initializing filtered results');
+    // fetchGroups();
     fetchPersons();
   }, []);
 
   // update filtered results based on search string
   useEffect(() => {
-    if (searchTerm !== '') {
-      fetchGroups();
+    console.log('updating filtered results');
+    if (searchTerm === '') {
+      // fetchGroups();
       fetchPersons();
     } else updateResults();
   }, [searchTerm]);
@@ -44,7 +45,7 @@ const MainContainer = () => {
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setDisplayResults(false);
-      setFilteredGroups([]);
+      // setFilteredGroups([]);
       setFilteredPersons([]);
     } else setDisplayResults(true);
   }, [searchTerm]);
@@ -52,15 +53,13 @@ const MainContainer = () => {
   // log current persons data
   useEffect(() => {
     console.log({ persons });
-    console.log({ groups });
-  }, [persons, groups]);
+  }, [persons]);
 
   async function fetchGroups() {
     try {
       const groupsData: any = await API.graphql({ query: queries.groups });
       setGroups(groupsData.data.groups);
     } catch (err) {
-      setError(true);
       console.log('error: ', err);
     }
   }
@@ -70,8 +69,8 @@ const MainContainer = () => {
       const personsData: any = await API.graphql({ query: queries.artists });
       console.log(personsData.data.artists);
       setPersons(personsData.data.artists);
+      console.log('got artist data');
     } catch (err) {
-      setError(true);
       console.log('error: ', err);
     }
   }
@@ -80,10 +79,10 @@ const MainContainer = () => {
   // TODO: Refactor so that search only occurs when user explicitly clicks/taps button
   function updateResults() {
     const regex = new RegExp(searchTerm, 'i');
-    const updatedGroups = groups.filter((group) => group.name.match(regex));
+    // const updatedGroups = groups.filter((group) => group.name.match(regex));
     const updatedPersons = persons.filter((person) => person.name.match(regex));
     console.log(updatedPersons);
-    setFilteredGroups(updatedGroups);
+    // setFilteredGroups(updatedGroups);
     setFilteredPersons(updatedPersons);
   }
 
@@ -123,7 +122,6 @@ const MainContainer = () => {
         writers, producers, engineers, musicians, and other contributors.
       </p>
       <Button onClick={() => setDisplayAddScreen(true)}>Add Artist or Group</Button>
-      {error && <h2>Nothing Found - Please Adjust Your Search</h2>}
       {displayAddScreen && !displayGroupScreen && !displayPersonScreen && (
         <AddContainer
           setGroups={setGroups}
