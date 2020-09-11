@@ -47,6 +47,10 @@ functions:
     layers:
       # - {Ref: NodePostgresLambdaLayer}
       - ${self:custom.lambdaLayers.nodePostgres}
+  getCountry:
+    handler: src/functions/country/getCountry.getCountry    
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
   getMajorGenres:
     handler: src/functions/genre/getMajorGenres.getMajorGenres
     layers:      
@@ -113,6 +117,10 @@ custom:
         type: Query
         field: countries        
         response: false
+      - dataSource: getCountryDS
+        type: Query
+        field: country  
+        response: false
       - dataSource: getMajorGenresDS
         type: Query
         field: majorGenres        
@@ -153,6 +161,11 @@ custom:
         name: getCountriesDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getCountryDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetCountryLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       - type: AWS_LAMBDA
         name: getMajorGenresDS

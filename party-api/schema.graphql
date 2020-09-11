@@ -5,6 +5,7 @@ type Mutation {
 
 type Query {
 	countries: [Country!]!
+	country(id: Int!): Country
 	majorGenres: [MajorGenre!]!
 	minorGenres: [MinorGenre!]!
 	artists: [Person!]!
