@@ -1,9 +1,10 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Card from '../../styled-components/Card';
 import Button from '../../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Group } from '../../types/ArtistTypes';
-import { person } from '../../graphql/queries';
+import { Group, Genre, Country } from '../../types/ArtistTypes';
+import * as queries from '../../graphql/queries';
+import { getNameOfDeclaration } from 'typescript';
 // TODO: create update method
 // TODO: create delete method
 // import { } from '../graphql/mutations';
@@ -18,15 +19,26 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
   const { name, type, dateFormed } = group;
   const majorGenre = { id: 863, name: 'Action' };
   const minorGenre = { id: 599, name: '120' };
-  const country = { id: 25, name: 'Australia' };
+  const country = { id: 287, name: 'Argentina' };
+
   const [toggleUpdateGroup, setToggleUpdateGroup] = useState(false);
-  const [updateName, setUpdateName] = useState(name);
-  const [updateType, setUpdateType] = useState(type);
-  const [updateDateFormed, setUpdateDateFormed] = useState(dateFormed);
-  const [updateMajorGenre, setUpdateMajorGenre] = useState(majorGenre.name);
-  const [updateMinorGenre, setUpdateMinorGenre] = useState(minorGenre.name);
-  const [updateCountry, setUpdateCountry] = useState(country.name);
+  const [updatedName, setUpdatedName] = useState(name);
+  const [updatedType, setUpdatedType] = useState(type);
+  const [updatedDateFormed, setUpdatedDateFormed] = useState(dateFormed);
+  const [updatedMajorGenre, setUpdatedMajorGenre] = useState(majorGenre);
+  const [updatedMinorGenre, setUpdatedMinorGenre] = useState(minorGenre);
+  const [updatedCountry, setUpdatedCountry] = useState(country);
   // const [updatePersons, setUpdatePersons] = useState(persons);
+
+  const [availableMajorGenres, setAvailableMajorGenres] = useState<Genre[]>([]);
+  const [availableMinorGenres, setAvailableMinorGenres] = useState<Genre[]>([]);
+  const [availableCountries, setAvailableCountries] = useState<Country[]>([]);
+
+  // Fetch all country and genre info when component mounts
+  useEffect(() => {
+    fetchCountries();
+    fetchGenres();
+  }, []);
 
   // TODO: handle delete
   // const handleDelete = async (id: string) => {
@@ -43,12 +55,12 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
   // const handleUpdate = async (id: string) => {
   //   setGroups((prevState: any) => {
   //     const editedGroup = prevState.find((group: any) => group.id === id);
-  //     editedGroup.name = updateName;
-  //     editedGroup.type = updateType;
-  //     editedGroup.dateFormed = updateDateFormed;
-  //     editedGroup.majorGenre = updateMajorGenre;
-  //     editedGroup.minorGenre = updateMinorGenre;
-  //     editedGroup.country = updateCountry;
+  //     editedGroup.name = updatedName;
+  //     editedGroup.type = updatedType;
+  //     editedGroup.dateFormed = updatedDateFormed;
+  //     editedGroup.majorGenre = updatedMajorGenre;
+  //     editedGroup.minorGenre = updatedMinorGenre;
+  //     editedGroup.country = updatedCountry;
   //     editedGroup.persons = updatePersons;
   //     return [...prevState];
   //   });
@@ -67,42 +79,92 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
 
   const handleUpdateToggle = () => {
     setToggleUpdateGroup((prevState) => !prevState);
-    setUpdateName(name);
-    setUpdateType(type);
-    setUpdateDateFormed(dateFormed);
-    setUpdateMajorGenre(majorGenre.name);
-    setUpdateMinorGenre(minorGenre.name);
-    setUpdateCountry(country.name);
+    setUpdatedName(name);
+    setUpdatedType(type);
+    setUpdatedDateFormed(dateFormed);
+    setUpdatedMajorGenre(majorGenre);
+    setUpdatedMinorGenre(minorGenre);
+    setUpdatedCountry(country);
     // setUpdatePersons(persons);
   };
+
+  async function fetchCountries() {
+    try {
+      const countryData: any = await API.graphql({ query: queries.countries });
+      setAvailableCountries(countryData.data.countries);
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
+
+  async function handleUpdateCountry(e: React.ChangeEvent<HTMLSelectElement>) {
+    const val = Number(e.target.value);
+    const newCountry = availableCountries.find((country) => country.id == val);
+    if (newCountry) setUpdatedCountry(newCountry);
+  }
+
+  async function fetchGenres() {
+    try {
+      const majorGenreData: any = await API.graphql({ query: queries.majorGenres });
+      const minorGenreData: any = await API.graphql({ query: queries.minorGenres });
+      setAvailableMajorGenres(majorGenreData.data.majorGenres);
+      setAvailableMinorGenres(minorGenreData.data.minorGenres);
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
+
+  function handleUpdateMajorGenre(e: React.ChangeEvent<HTMLSelectElement>) {
+    const selectedGenre = availableMajorGenres.find((genre) => genre.id === Number(e.target.value));
+    if (selectedGenre) setUpdatedMajorGenre(selectedGenre);
+  }
+
+  function handleUpdateMinorGenre(e: React.ChangeEvent<HTMLSelectElement>) {
+    const selectedGenre = availableMinorGenres.find((genre) => genre.id === Number(e.target.value));
+    if (selectedGenre) setUpdatedMinorGenre(selectedGenre);
+  }
 
   return (
     <Card>
       <Button onClick={handleGoBack}>Go Back</Button>
       {toggleUpdateGroup ? (
         <Fragment>
-          <input type="text" value={updateName} onChange={(e) => setUpdateName(e.target.value)} />
-          <input type="text" value={updateType} onChange={(e) => setUpdateType(e.target.value)} />
+          <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
+          <select value={type} onChange={(e) => setUpdatedType(e.target.value)}>
+            <option>Select type</option>
+            <option value="BAND">BAND</option>
+            <option value="ORCHESTRA">ORCHESTRA</option>
+          </select>
           <input
             type="date"
-            value={updateDateFormed}
-            onChange={(e) => setUpdateDateFormed(e.target.value)}
+            value={updatedDateFormed}
+            onChange={(e) => setUpdatedDateFormed(e.target.value)}
           />
-          <input
-            type="text"
-            value={updateMajorGenre}
-            onChange={(e) => setUpdateMajorGenre(e.target.value)}
-          />
-          <input
-            type="text"
-            value={updateMinorGenre}
-            onChange={(e) => setUpdateMinorGenre(e.target.value)}
-          />
-          <input
-            type="text"
-            value={updateCountry}
-            onChange={(e) => setUpdateCountry(e.target.value)}
-          />
+          <select value={majorGenre.id} onChange={(e) => handleUpdateMajorGenre(e)}>
+            {availableMajorGenres.length &&
+              availableMajorGenres.map((country: Country) => (
+                <option key={`${majorGenre.id}-${majorGenre.name}`} value={majorGenre.id}>
+                  {majorGenre.name}
+                </option>
+              ))}
+          </select>
+          <select value={minorGenre.id} onChange={(e) => handleUpdateMinorGenre(e)}>
+            {availableMinorGenres.length &&
+              availableMinorGenres.map((country: Country) => (
+                <option key={`${minorGenre.id}-${minorGenre.name}`} value={minorGenre.id}>
+                  {minorGenre.name}
+                </option>
+              ))}
+          </select>
+
+          <select value={updatedCountry.id} onChange={handleUpdateCountry}>
+            {availableCountries.length &&
+              availableCountries.map((country: Country) => (
+                <option key={`${country.id}-${country.name}`} value={country.id}>
+                  {country.name}
+                </option>
+              ))}
+          </select>
           {/* <ul>
             {persons.map((person) => (
               <li key={person.id}>{person.name}</li>
