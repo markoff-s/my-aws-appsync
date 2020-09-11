@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import Card from '../../styled-components/Card';
-import Button from '../../styled-components/Button';
+import Card from '../styled-components/Card';
+import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Group, Genre, Country } from '../../types/ArtistTypes';
-import * as queries from '../../graphql/queries';
+import { Group, Genre, Country } from '../types/ArtistTypes';
+import * as queries from '../graphql/queries';
 import { getNameOfDeclaration } from 'typescript';
 // TODO: create update method
 // TODO: create delete method
@@ -99,7 +99,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
 
   async function handleUpdateCountry(e: React.ChangeEvent<HTMLSelectElement>) {
     const val = Number(e.target.value);
-    const newCountry = availableCountries.find((country) => country.id == val);
+    const newCountry = availableCountries.find((country) => country.id === val);
     if (newCountry) setUpdatedCountry(newCountry);
   }
 

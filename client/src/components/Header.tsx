@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import Button from '../../styled-components/Button';
+import Button from '../styled-components/Button';
 
 interface Props {
   isLoggedIn: boolean;

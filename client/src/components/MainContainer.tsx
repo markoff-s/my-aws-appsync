@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import Card from '../../styled-components/Card';
-import Button from '../../styled-components/Button';
-import * as queries from '../../graphql/queries';
-import * as mutations from '../../graphql/mutations';
+import Card from '../styled-components/Card';
+import Button from '../styled-components/Button';
+import * as queries from '../graphql/queries';
+import * as mutations from '../graphql/mutations';
 import API from '@aws-amplify/api';
-import { Group, Person } from '../../types/ArtistTypes';
+import { Group, Person } from '../types/ArtistTypes';
 import SearchContainer from './SearchContainer';
 import ResultsContainer from './ResultsContainer';
 import GroupPage from './GroupPage';

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import Card from '../../styled-components/Card';
-import Button from '../../styled-components/Button';
+import Card from '../styled-components/Card';
+import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
-import { Person, Group, Country } from '../../types/ArtistTypes';
-import * as mutations from '../../graphql/mutations';
-import * as queries from '../../graphql/queries';
+import { Person, Group, Country } from '../types/ArtistTypes';
+import * as mutations from '../graphql/mutations';
+import * as queries from '../graphql/queries';
 
 interface PersonProps {
   person: Person;
@@ -83,7 +83,7 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
 
   async function handleUpdateCountry(e: React.ChangeEvent<HTMLSelectElement>) {
     const val = Number(e.target.value);
-    const newCountry = availableCountries.find((country) => country.id == val);
+    const newCountry = availableCountries.find((country) => country.id === val);
     if (newCountry) setUpdatedCountry(newCountry);
   }
 

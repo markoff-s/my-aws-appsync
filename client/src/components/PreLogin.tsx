@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from '../../styled-components/Card';
-import Button from '../../styled-components/Button';
+import Card from '../styled-components/Card';
+import Button from '../styled-components/Button';
 
 interface Props {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;

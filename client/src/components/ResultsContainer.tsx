@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from '../../styled-components/Card';
-import { Group, Person } from '../../types/ArtistTypes';
+import Card from '../styled-components/Card';
+import { Group, Person } from '../types/ArtistTypes';
 import Result from './Result';
 
 interface Props {
