@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import theme from './styled-components/Theme';
 import PreLogin from './components/PreLogin';
-import MainContainer from './components/MainContainer';
+import MainContainer from './containers/MainContainer';
 import Header from './components/Header';
 
 import './scss/app.scss';

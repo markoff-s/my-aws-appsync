@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '../styled-components/Card';
 import { Group, Person } from '../types/ArtistTypes';
-import Result from './Result';
+import Result from '../components/Result';
 
 interface Props {
   filteredGroups: Group[];

@@ -7,8 +7,8 @@ import API from '@aws-amplify/api';
 import { Group, Person } from '../types/ArtistTypes';
 import SearchContainer from './SearchContainer';
 import ResultsContainer from './ResultsContainer';
-import GroupPage from './GroupPage';
-import PersonPage from './PersonPage';
+import GroupPage from '../components/GroupPage';
+import PersonPage from '../components/PersonPage';
 import AddContainer from './AddContainer';
 
 const MainContainer = () => {
