@@ -1,23 +1,34 @@
-import React, { useState } from 'react';
-import { AmplifySignOut } from '@aws-amplify/ui-react';
+import React, { useState, Fragment } from 'react';
+import Button from '../../styled-components/Button';
 
-const Header = () => {
+interface Props {
+  isLoggedIn: boolean;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Header: React.FC<Props> = ({ isLoggedIn, setIsLoggedIn }) => {
   const [toggleDropDown, setToggleDropDown] = useState(false);
   return (
     <div className="header">
-      <div className="header__left">Artist / Group Search</div>
+      <div className="header__left">
+        <p>Artist / Group Search</p>
+      </div>
       <div className="header__right">
-        <div
-          className="header__right-top"
-          onClick={() => setToggleDropDown((prevState) => !prevState)}
-        >
-          <p>Zac Haluza</p>
-          <i className="fas fa-chevron-down"></i>
-        </div>
-        {toggleDropDown && (
-          <div className="header__right-bottom">
-            <AmplifySignOut />
-          </div>
+        {isLoggedIn && (
+          <Fragment>
+            <div
+              className="header__right-top"
+              onClick={() => setToggleDropDown((prevState) => !prevState)}
+            >
+              <p>Zac Haluza</p>
+              <i className="fas fa-chevron-down"></i>
+            </div>
+            {toggleDropDown && (
+              <div className="header__right-bottom">
+                <Button onClick={() => setIsLoggedIn(false)}>SIGN OUT</Button>
+              </div>
+            )}
+          </Fragment>
         )}
       </div>
     </div>
