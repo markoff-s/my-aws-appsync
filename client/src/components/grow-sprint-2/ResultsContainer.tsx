@@ -23,7 +23,7 @@ const ResultsContainer: React.FC<Props> = ({
       key={`${group.id}-${group.name}`}
       name={group.name}
       format="Band Name"
-      country={group.country.name}
+      country="Australia"
       comments="Awesome group"
       onClick={() => handleDisplayGroupScreen(group)}
     />
@@ -33,7 +33,7 @@ const ResultsContainer: React.FC<Props> = ({
       key={`${person.id}-${person.name}`}
       name={person.name}
       format="Artist Name"
-      country={'US'}
+      country="China"
       comments="Awesome person"
       onClick={() => handleDisplayPersonScreen(person)}
     />

@@ -15,7 +15,10 @@ interface GroupProps {
 }
 
 const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => {
-  const { name, type, dateFormed, majorGenre, minorGenre, country, persons } = group;
+  const { name, type, dateFormed } = group;
+  const majorGenre = { id: 863, name: 'Action' };
+  const minorGenre = { id: 599, name: '120' };
+  const country = { id: 25, name: 'Australia' };
   const [toggleUpdateGroup, setToggleUpdateGroup] = useState(false);
   const [updateName, setUpdateName] = useState(name);
   const [updateType, setUpdateType] = useState(type);
@@ -23,7 +26,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
   const [updateMajorGenre, setUpdateMajorGenre] = useState(majorGenre.name);
   const [updateMinorGenre, setUpdateMinorGenre] = useState(minorGenre.name);
   const [updateCountry, setUpdateCountry] = useState(country.name);
-  const [updatePersons, setUpdatePersons] = useState(persons);
+  // const [updatePersons, setUpdatePersons] = useState(persons);
 
   // TODO: handle delete
   // const handleDelete = async (id: string) => {
@@ -70,7 +73,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
     setUpdateMajorGenre(majorGenre.name);
     setUpdateMinorGenre(minorGenre.name);
     setUpdateCountry(country.name);
-    setUpdatePersons(persons);
+    // setUpdatePersons(persons);
   };
 
   return (
@@ -100,11 +103,11 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
             value={updateCountry}
             onChange={(e) => setUpdateCountry(e.target.value)}
           />
-          <ul>
+          {/* <ul>
             {persons.map((person) => (
               <li key={person.id}>{person.name}</li>
             ))}
-          </ul>
+          </ul> */}
           <Button onClick={() => {}}>Submit Changes</Button>
           <Button color={'light'} onClick={handleUpdateToggle}>
             Cancel Edit
@@ -119,11 +122,11 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
           <p>Minor Genre: {minorGenre.name}</p>
           <p>Country: {country.name}</p>
           <p>Persons</p>
-          <ul>
+          {/* <ul>
             {persons.map((person) => (
               <li key={person.id}>{person.name}</li>
             ))}
-          </ul>
+          </ul> */}
           <Button onClick={handleUpdateToggle}>Edit Artist Info</Button>
           <Button color={'light'} onClick={() => {}}>
             Delete

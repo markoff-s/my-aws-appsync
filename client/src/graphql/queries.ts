@@ -73,24 +73,24 @@ export const groups = /* GraphQL */ `
       name
       type
       dateFormed
-      majorGenre {
-        id
-        name
-      }
-      minorGenre {
-        id
-        name
-      }
-      country {
-        id
-        name
-      }
-      persons {
-        id
-        name
-        type
-        dob
-      }
+      # majorGenre {
+      #   id
+      #   name
+      # }
+      # minorGenre {
+      #   id
+      #   name
+      # }
+      # country {
+      #   id
+      #   name
+      # }
+      # persons {
+      #   id
+      #   name
+      #   type
+      #   dob
+      # }
     }
   }
 `;
