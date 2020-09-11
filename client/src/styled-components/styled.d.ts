@@ -2,10 +2,13 @@ import 'styled-components';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
+    font: {
+      default: string;
+    };
     colors: {
-      btnPrimary: string;
-      btnPrimary2: string;
-      btnSecondary: string;
+      accentPrimary: string;
+      accentPrimary2: string;
+      accentSecondary: string;
       white: string;
       black: string;
       ltBlack: string;
