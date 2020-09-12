@@ -25,6 +25,8 @@ const MainContainer = () => {
   const [currentPersonData, setCurrentPersonData] = useState<Person | null>();
   const [error, setError] = useState(false);
 
+  // TODO: incorporate React router logic here
+
   // Grab all group & person data (can later refactor for scalability)
   useEffect(() => {
     console.log('initializing filtered results');
@@ -124,7 +126,7 @@ const MainContainer = () => {
         writers, producers, engineers, musicians, and other contributors.
       </p>
       <Button onClick={() => setDisplayAddScreen(true)}>Add Artist or Group</Button>
-      {error && <h2>Error</h2>}
+      {error && <h2>Nothing Found. Please Adjust Your Search.</h2>}
       {displayAddScreen && !displayGroupScreen && !displayPersonScreen && !error && (
         <AddContainer
           setGroups={setGroups}
