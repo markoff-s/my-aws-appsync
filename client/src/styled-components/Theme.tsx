@@ -9,6 +9,7 @@ const Theme: DefaultTheme = {
     accentPrimary2: '#0261ac',
     accentSecondary: '#f2f2f2',
     white: '#fff',
+    gray: '#505050',
     black: '#000',
     ltBlack: '#3f3f3f',
   },
