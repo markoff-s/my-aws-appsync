@@ -50,3 +50,8 @@ export const createGroup = /* GraphQL */ `
     }
   }
 `;
+
+export const updatePerson = {};
+export const updateGroup = {};
+export const deletePerson = {};
+export const deleteGroup = {};
