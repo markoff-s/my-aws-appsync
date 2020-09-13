@@ -14,10 +14,7 @@ type Query {
 	artists: [Person!]!
 	artist(id: Int!): Person
 	groups: [Group!]!
-	group(id: Int!): Group
-
-	authors: [Author!]!
-	books: [Book!]!
+	group(id: Int!): Group	
 }
 
 # type Subscription {
@@ -97,18 +94,6 @@ enum GroupType {
 	BAND
 	ORCHESTRA
 }
-
-# DEPRECATED
-type Author {
-	id: String!
-	name: String!	
-}
-
-type Book {
-	id: String!
-	title: String!	
-}
-# DEPRECATED
 
 schema {
 	query: Query

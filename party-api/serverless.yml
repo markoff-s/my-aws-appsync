@@ -38,11 +38,7 @@ provider:
     NODE_PATH: "./:/opt/node_modules"
 
 functions:
-  getAuthors:
-    handler: src/functions/authors/getAuthors.getAuthors
-  getBooks:
-    handler: src/functions/books/getBooks.getBooks
-  
+  # country   
   getCountries:
     handler: src/functions/country/getCountries.getCountries    
     layers:
@@ -58,6 +54,7 @@ functions:
       # - {Ref: NodePostgresLambdaLayer}
       - ${self:custom.lambdaLayers.nodePostgres}
   
+  # genres
   getMajorGenres:
     handler: src/functions/genre/getMajorGenres.getMajorGenres
     layers:      
@@ -67,6 +64,7 @@ functions:
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
   
+  # artist
   getArtists:
     handler: src/functions/artist/getArtists.getArtists
     layers:      
@@ -88,6 +86,7 @@ functions:
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
   
+  # group
   getGroups:
     handler: src/functions/group/getGroups.getGroups
     layers:      
@@ -124,22 +123,13 @@ custom:
     defaultMappingTemplates: # default templates. Useful for Lambda templates that are often repetitive. Will be used if the template is not specified in a resolver      
       # respone: false # my.response.template.tpl # or e.g.: false for Direct lambdas
       request: false # my.request.template.tpl # or, e.g: false for Direct lambdas
-    mappingTemplates:      
-      - dataSource: getAuthorsDS
-        type: Query #Query, Mutation, Subscription
-        field: authors
-        response: false # this is weird - defaultMappingTemplates.request value is pulled correctly, 
-        # however defaultMappingTemplates.response is not pulled and i have to set it explicitly
-      - dataSource: getBooksDS
-        type: Query
-        field: books        
-        response: false
-      
+    mappingTemplates:                  
       # country
       - dataSource: getCountriesDS
         type: Query
         field: countries        
-        response: false
+        response: false # this is weird - defaultMappingTemplates.request value is pulled correctly, 
+        # however defaultMappingTemplates.response is not pulled and i have to set it explicitly
       - dataSource: getCountryDS
         type: Query
         field: country  
@@ -193,21 +183,11 @@ custom:
         response: false      
     schema: schema.graphql
     dataSources:      
-      - type: AWS_LAMBDA
-        name: getAuthorsDS
-        config:
-          lambdaFunctionArn: { Fn::GetAtt: ["GetAuthorsLambdaFunction", Arn] } # Where GraphqlLambdaFunction is the lambda function cloudformation resource created by serverless for the serverless function named graphql
-          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
-      - type: AWS_LAMBDA
-        name: getBooksDS
-        config:
-          lambdaFunctionArn: { Fn::GetAtt: ["GetBooksLambdaFunction", Arn] }
-          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
-      
+      # country      
       - type: AWS_LAMBDA
         name: getCountriesDS
         config:
-          lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesLambdaFunction", Arn] }
+          lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesLambdaFunction", Arn] } # Where GraphqlLambdaFunction is the lambda function cloudformation resource created by serverless for the serverless function named graphql
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }      
       - type: AWS_LAMBDA
         name: getCountryDS
@@ -220,6 +200,7 @@ custom:
           lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesBatchLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       
+      # genres
       - type: AWS_LAMBDA
         name: getMajorGenresDS
         config:
@@ -231,6 +212,7 @@ custom:
           lambdaFunctionArn: { Fn::GetAtt: ["GetMinorGenresLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       
+      # artist
       - type: AWS_LAMBDA
         name: getArtistsDS
         config:
@@ -257,6 +239,7 @@ custom:
           lambdaFunctionArn: { Fn::GetAtt: ["DeleteArtistLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       
+      # group
       - type: AWS_LAMBDA
         name: getGroupsDS
         config:
