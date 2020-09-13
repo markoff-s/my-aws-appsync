@@ -19,7 +19,7 @@ exports.getArtists = async (event, context, callback) => {
 		ELSE 'UNDEFINED_PERSON'
 	END AS "type",
 		dob,
-		country_id
+		country_id as "countryId"
 	from mydb.public.person
 	order by name asc;
 	`);

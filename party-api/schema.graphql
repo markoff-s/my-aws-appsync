@@ -42,6 +42,7 @@ type Person {
 	name: String!
 	type: PersonType!
 	dob: String!
+	countryId: Int!
 	country: Country
 	groups: [Group!]
 }
