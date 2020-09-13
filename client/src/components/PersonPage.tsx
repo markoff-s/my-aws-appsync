@@ -3,8 +3,9 @@ import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { Person, Group, Country } from '../types/ArtistTypes';
-import * as mutations from '../graphql/mutations';
 import * as queries from '../graphql/queries';
+// TODO: import edit/delete mutations when they're ready
+import * as mutations from '../graphql/mutations';
 
 interface PersonProps {
   person: Person;
@@ -13,64 +14,61 @@ interface PersonProps {
 }
 
 const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack }) => {
-  const { id, name, type, dob } = person;
+  const { id, name, type, dob, groups } = person;
   const country = { id: 73, name: 'China' };
   const [toggleUpdatePerson, setToggleUpdatePerson] = useState(false);
   const [updatedName, setUpdatedName] = useState(name);
   const [updatedType, setUpdatedType] = useState(type);
   const [updatedDateOfBirth, setUpdatedDateOfBirth] = useState(dob);
   const [updatedCountry, setUpdatedCountry] = useState(country);
-  // const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
+  const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
 
   const [availableCountries, setAvailableCountries] = useState<Country[]>([]);
-  // const [availableGroups, setAvailableGroups] = useState<Group[]>();
+  const [availableGroups, setAvailableGroups] = useState<Group[]>();
 
-  // TODO: add delete to schema
-
-  // const handleDelete = async (id: string) => {
-  //   setArtists((prevState: any) => prevState.filter((artist: any) => artist.id !== id));
-  //   try {
-  //     await API.graphql({ query: DeleteArtist, variables: { input: { id } } });
-  //     console.log('Successfully deleted artist');
-  //   } catch (err) {
-  //     console.log('error: ', err);
-  //   }
-  // };
-  // TODO: Add GraphQL update mutation
+  async function handleDelete() {
+    setPersons((prevState: any) => prevState.filter((person: Person) => person.id !== Number(id)));
+    try {
+      await API.graphql({ query: mutations.deletePerson, variables: { input: { id } } });
+      console.log('Successfully deleted artist');
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  }
 
   useEffect(() => {
     fetchCountries();
     // fetchGroups();
   }, []);
 
-  // async function fetchGroups() {
-  //   try {
-  //     const groupsData: any = await API.graphql({ query: queries.groups });
-  //     setAvailableGroups(groupsData.data.groups);
-  //   } catch (err) {
-  //     console.log('err: ', err);
-  //   }
-  // }
+  async function fetchGroups() {
+    try {
+      const groupsData: any = await API.graphql({ query: queries.groups });
+      setAvailableGroups(groupsData.data.groups);
+    } catch (err) {
+      console.log('err: ', err);
+    }
+  }
 
-  // async function addGroup(e: React.ChangeEvent<HTMLSelectElement>) {
-  //   const val = Number(e.target.value);
-  //   if (val && availableGroups) {
-  //     const updatedGroup = availableGroups.find((group) => group.id === val);
-  //     if (updatedGroup && !updatedGroups.find((group) => group.id === val)) {
-  //       setUpdatedGroups((prevState) => {
-  //         const newState = [...prevState];
-  //         newState.push(updatedGroup);
-  //         return newState;
-  //       });
-  //     }
-  //   }
-  // }
+  async function addGroup(e: React.ChangeEvent<HTMLSelectElement>) {
+    const val = Number(e.target.value);
+    if (val && availableGroups) {
+      const updatedGroup = availableGroups.find((group) => group.id === val);
+      if (updatedGroup && !updatedGroups.find((group) => group.id === val)) {
+        setUpdatedGroups((prevState) => {
+          const newState = [...prevState];
+          newState.push(updatedGroup);
+          return newState;
+        });
+      }
+    }
+  }
 
-  // async function removeGroup(id: number) {
-  //   setUpdatedGroups((prevState) => {
-  //     return prevState.filter((group) => group.id !== id);
-  //   });
-  // }
+  async function removeGroup(id: number) {
+    setUpdatedGroups((prevState) => {
+      return prevState.filter((group) => group.id !== id);
+    });
+  }
 
   async function fetchCountries() {
     try {
@@ -87,7 +85,7 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
     if (newCountry) setUpdatedCountry(newCountry);
   }
 
-  async function handleUpdate(id: number) {
+  async function handleUpdate() {
     setPersons((prevState: Person[]) => {
       const updateIdx = prevState.findIndex((person: Person) => person.id === id);
       const updatedPerson = { ...prevState[updateIdx] };
@@ -103,23 +101,24 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
       return personsCopy;
     });
 
-    // try {
-    //   await API.graphql({
-    //     query: mutations.updateGroup,
-    //     variables: {
-    //       input: {
-    //         name: updatedName,
-    //         type: updatedType,
-    //         dob: updatedDateOfBirth,
-    //         country: updatedCountry,
-    //         groups: updatedGroups,
-    //       },
-    //     },
-    //   });
-    //   console.log('Successfully updated artist');
-    // } catch (err) {
-    //   console.log('error: ', err);
-    // }
+    try {
+      await API.graphql({
+        query: mutations.updatePerson,
+        variables: {
+          input: {
+            id,
+            name: updatedName,
+            type: updatedType,
+            dob: updatedDateOfBirth,
+            country: updatedCountry,
+            groups: updatedGroups,
+          },
+        },
+      });
+      console.log('Successfully updated person');
+    } catch (err) {
+      console.log('error: ', err);
+    }
     setToggleUpdatePerson(false);
   }
 
@@ -169,7 +168,7 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
               ))}
             </ul>
           )} */}
-          <Button onClick={() => handleUpdate(id)}>Submit Changes</Button>
+          <Button onClick={handleUpdate}>Submit Changes</Button>
           <Button color={'light'} onClick={handleUpdateToggle}>
             Cancel Edit
           </Button>
@@ -186,7 +185,7 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
             ))}
           </ul> */}
           <Button onClick={handleUpdateToggle}>Edit Artist Info</Button>
-          <Button color={'light'} onClick={() => {}}>
+          <Button color={'light'} onClick={handleDelete}>
             Delete
           </Button>
         </Fragment>
