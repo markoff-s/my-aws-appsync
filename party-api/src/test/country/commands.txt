@@ -1,0 +1,3 @@
+slss invoke local -f getCountry --path src/test/country/getCountry.json
+
+slss invoke local -f getCountriesBatch --path src/test/country/getCountriesBatch.json

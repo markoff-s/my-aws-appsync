@@ -51,6 +51,11 @@ functions:
     handler: src/functions/country/getCountry.getCountry    
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  getCountriesBatch:
+    handler: src/functions/country/getCountriesBatch.getCountriesBatch
+    layers:
+      # - {Ref: NodePostgresLambdaLayer}
+      - ${self:custom.lambdaLayers.nodePostgres}
   getMajorGenres:
     handler: src/functions/genre/getMajorGenres.getMajorGenres
     layers:      
@@ -145,6 +150,12 @@ custom:
         type: Query
         field: group
         response: false
+
+      - dataSource: getCountriesBatchDS
+        type: Person
+        field: country          
+        request: country/person.country.request.vtl # request mapping template name | defaults to `defaultMappingTemplates.request` or {type}.{field}.request.vtl
+        response: false
     schema: schema.graphql
     dataSources:      
       - type: AWS_LAMBDA
@@ -161,11 +172,16 @@ custom:
         name: getCountriesDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesLambdaFunction", Arn] }
-          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }      
       - type: AWS_LAMBDA
         name: getCountryDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetCountryLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: getCountriesBatchDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesBatchLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       - type: AWS_LAMBDA
         name: getMajorGenresDS
