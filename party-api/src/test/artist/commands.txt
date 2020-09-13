@@ -4,3 +4,5 @@ slss invoke local -f getArtist --path src/test/artist/getArtist.json
 slss invoke local -f createArtist --path src/test/artist/createArtist.json
 
 slss invoke local -f deleteArtist --path src/test/artist/deleteArtist.json
+
+slss invoke local -f updateArtist --path src/test/artist/updateArtist.json

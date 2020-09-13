@@ -1,5 +1,6 @@
 type Mutation {
 	createArtist(input: CreatePersonInput!): Person!
+	updateArtist(input: UpdatePersonInput!): Person!
 	deleteArtist(id: Int!): Int!
 
 	createGroup(input: CreateGroupInput!): Group!
@@ -50,6 +51,15 @@ type Person {
 }
 
 input CreatePersonInput {
+	name: String!
+	type: PersonType!
+	dob: String!
+	countryId: Int!
+	groups: [Int]
+}
+
+input UpdatePersonInput {
+	id: Int!
 	name: String!
 	type: PersonType!
 	dob: String!

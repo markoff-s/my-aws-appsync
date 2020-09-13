@@ -79,6 +79,10 @@ functions:
     handler: src/functions/artist/createArtist.createArtist
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  updateArtist:
+    handler: src/functions/artist/updateArtist.updateArtist
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
   deleteArtist:
     handler: src/functions/artist/deleteArtist.deleteArtist
     layers:      
@@ -169,6 +173,10 @@ custom:
         type: Mutation
         field: createArtist
         response: false
+      - dataSource: updateArtistDS
+        type: Mutation
+        field: updateArtist
+        response: false
       - dataSource: deleteArtistDS
         type: Mutation
         field: deleteArtist
@@ -237,6 +245,11 @@ custom:
         name: createArtistDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["CreateArtistLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: updateArtistDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["UpdateArtistLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       - type: AWS_LAMBDA
         name: deleteArtistDS

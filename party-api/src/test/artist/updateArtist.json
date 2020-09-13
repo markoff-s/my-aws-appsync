@@ -1,0 +1,11 @@
+{
+    "arguments": {
+        "input": {
+            "id": 1001,
+            "name": "Update Test",
+            "type": 2,
+            "dob": "2/2/2002",
+            "countryId": 33
+        }
+    }
+}
