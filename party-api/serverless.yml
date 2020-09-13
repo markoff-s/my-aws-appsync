@@ -42,6 +42,7 @@ functions:
     handler: src/functions/authors/getAuthors.getAuthors
   getBooks:
     handler: src/functions/books/getBooks.getBooks
+  
   getCountries:
     handler: src/functions/country/getCountries.getCountries    
     layers:
@@ -56,6 +57,7 @@ functions:
     layers:
       # - {Ref: NodePostgresLambdaLayer}
       - ${self:custom.lambdaLayers.nodePostgres}
+  
   getMajorGenres:
     handler: src/functions/genre/getMajorGenres.getMajorGenres
     layers:      
@@ -64,6 +66,7 @@ functions:
     handler: src/functions/genre/getMinorGenres.getMinorGenres
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  
   getArtists:
     handler: src/functions/artist/getArtists.getArtists
     layers:      
@@ -76,6 +79,11 @@ functions:
     handler: src/functions/artist/createArtist.createArtist
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  deleteArtist:
+    handler: src/functions/artist/deleteArtist.deleteArtist
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
+  
   getGroups:
     handler: src/functions/group/getGroups.getGroups
     layers:      
@@ -123,6 +131,7 @@ custom:
         field: books        
         response: false
       
+      # country
       - dataSource: getCountriesDS
         type: Query
         field: countries        
@@ -137,6 +146,7 @@ custom:
         request: country/person.country.request.vtl # request mapping template name | defaults to `defaultMappingTemplates.request` or {type}.{field}.request.vtl
         response: false
       
+      # genres
       - dataSource: getMajorGenresDS
         type: Query
         field: majorGenres        
@@ -146,6 +156,7 @@ custom:
         field: minorGenres        
         response: false
       
+      # artist
       - dataSource: getArtistsDS
         type: Query
         field: artists        
@@ -158,7 +169,12 @@ custom:
         type: Mutation
         field: createArtist
         response: false
+      - dataSource: deleteArtistDS
+        type: Mutation
+        field: deleteArtist
+        response: false
       
+      # group
       - dataSource: getGroupsDS
         type: Query
         field: groups  
@@ -179,6 +195,7 @@ custom:
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetBooksLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      
       - type: AWS_LAMBDA
         name: getCountriesDS
         config:
@@ -194,6 +211,7 @@ custom:
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetCountriesBatchLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      
       - type: AWS_LAMBDA
         name: getMajorGenresDS
         config:
@@ -204,6 +222,7 @@ custom:
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetMinorGenresLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      
       - type: AWS_LAMBDA
         name: getArtistsDS
         config:
@@ -219,6 +238,12 @@ custom:
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["CreateArtistLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: deleteArtistDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["DeleteArtistLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      
       - type: AWS_LAMBDA
         name: getGroupsDS
         config:
