@@ -49,6 +49,22 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
   };
 
   const handleUpdate = async () => {
+    setGroups((prevState: Group[]) => {
+      const updateIdx = prevState.findIndex((group: Group) => group.id === id);
+      const updatedGroup = { ...prevState[updateIdx] };
+      updatedGroup.name = updatedName;
+      updatedGroup.type = updatedType;
+      updatedGroup.dateFormed = updatedDateFormed;
+      updatedGroup.majorGenre = updatedMajorGenre;
+      updatedGroup.minorGenre = updatedMinorGenre;
+      updatedGroup.country = updatedCountry;
+      // updatedGroup.persons = updatedPersons;
+
+      const groupsCopy = [...prevState];
+      groupsCopy[updateIdx] = updatedGroup;
+
+      return groupsCopy;
+    });
     try {
       await API.graphql({
         query: mutations.updateGroup,
