@@ -1,5 +1,5 @@
 type Mutation {
-	createPerson(input: CreatePersonInput!): Person!
+	createArtist(input: CreatePersonInput!): Person!
 	createGroup(input: CreateGroupInput!): Group!
 }
 

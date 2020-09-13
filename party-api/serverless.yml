@@ -72,6 +72,10 @@ functions:
     handler: src/functions/artist/getArtist.getArtist
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  createArtist:
+    handler: src/functions/artist/createArtist.createArtist
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
   getGroups:
     handler: src/functions/group/getGroups.getGroups
     layers:      
@@ -150,6 +154,10 @@ custom:
         type: Query
         field: artist
         response: false
+      - dataSource: createArtistDS
+        type: Mutation
+        field: createArtist
+        response: false
       
       - dataSource: getGroupsDS
         type: Query
@@ -205,6 +213,11 @@ custom:
         name: getArtistDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetArtistLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: createArtistDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["CreateArtistLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
       - type: AWS_LAMBDA
         name: getGroupsDS
