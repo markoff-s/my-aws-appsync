@@ -4,10 +4,8 @@ import Button from '../styled-components/Button';
 import API from '@aws-amplify/api';
 import { Group, Genre, Country } from '../types/ArtistTypes';
 import * as queries from '../graphql/queries';
-import { getNameOfDeclaration } from 'typescript';
-// TODO: create update method
-// TODO: create delete method
-// import { } from '../graphql/mutations';
+// TODO: import edit/delete mutations when they're ready
+import * as mutations from '../graphql/mutations';
 
 interface GroupProps {
   group: Group;
@@ -16,7 +14,7 @@ interface GroupProps {
 }
 
 const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => {
-  const { name, type, dateFormed } = group;
+  const { id, name, type, dateFormed } = group;
   const majorGenre = { id: 863, name: 'Action' };
   const minorGenre = { id: 599, name: '120' };
   const country = { id: 287, name: 'Argentina' };
@@ -40,43 +38,41 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
     fetchGenres();
   }, []);
 
-  // TODO: handle delete
-  // const handleDelete = async (id: string) => {
-  //   setArtists((prevState: any) => prevState.filter((artist: any) => artist.id !== id));
-  //   try {
-  //     await API.graphql({ query: DeleteArtist, variables: { input: { id } } });
-  //     console.log('Successfully deleted artist');
-  //   } catch (err) {
-  //     console.log('error: ', err);
-  //   }
-  // };
+  const handleDelete = async () => {
+    setGroups((prevState: any) => prevState.filter((artist: any) => artist.id !== id));
+    try {
+      await API.graphql({ query: mutations.deleteGroup, variables: { input: { id } } });
+      console.log('Successfully deleted artist');
+    } catch (err) {
+      console.log('error: ', err);
+    }
+  };
 
-  // TODO: handle update
-  // const handleUpdate = async (id: string) => {
-  //   setGroups((prevState: any) => {
-  //     const editedGroup = prevState.find((group: any) => group.id === id);
-  //     editedGroup.name = updatedName;
-  //     editedGroup.type = updatedType;
-  //     editedGroup.dateFormed = updatedDateFormed;
-  //     editedGroup.majorGenre = updatedMajorGenre;
-  //     editedGroup.minorGenre = updatedMinorGenre;
-  //     editedGroup.country = updatedCountry;
-  //     editedGroup.persons = updatePersons;
-  //     return [...prevState];
-  //   });
+  const handleUpdate = async () => {
+    try {
+      await API.graphql({
+        query: mutations.updateGroup,
+        variables: {
+          input: {
+            id,
+            name: updatedName,
+            type: updatedType,
+            dateFormed: updatedDateFormed,
+            majorGenre: updatedMajorGenre,
+            minorGenre: updatedMinorGenre,
+            country: updatedCountry,
+            // persons: updatedPersons
+          },
+        },
+      });
+      console.log('Successfully updated artist');
+    } catch (err) {
+      console.log('error: ', err);
+    }
+    setToggleUpdateGroup(false);
+  };
 
-  //   try {
-  //     await API.graphql({
-  //       query: update,
-  //       variables: { input: { id, name: updateArtistName, description: updateArtistDescription } },
-  //     });
-  //     console.log('Successfully updated artist');
-  //   } catch (err) {
-  //     console.log('error: ', err);
-  //   }
-  //   setToggleUpdateArtist(false);
-  // };
-
+  // reset update field values when toggling between read and update mode
   const handleUpdateToggle = () => {
     setToggleUpdateGroup((prevState) => !prevState);
     setUpdatedName(name);
@@ -170,7 +166,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
               <li key={person.id}>{person.name}</li>
             ))}
           </ul> */}
-          <Button onClick={() => {}}>Submit Changes</Button>
+          <Button onClick={handleUpdate}>Submit Changes</Button>
           <Button color={'light'} onClick={handleUpdateToggle}>
             Cancel Edit
           </Button>
@@ -190,7 +186,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
             ))}
           </ul> */}
           <Button onClick={handleUpdateToggle}>Edit Artist Info</Button>
-          <Button color={'light'} onClick={() => {}}>
+          <Button color={'light'} onClick={handleDelete}>
             Delete
           </Button>
         </Fragment>
