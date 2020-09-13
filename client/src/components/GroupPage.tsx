@@ -14,7 +14,7 @@ interface GroupProps {
 }
 
 const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => {
-  const { id, name, type, dateFormed } = group;
+  const { id, name, type, dateFormed, persons } = group;
   const majorGenre = { id: 863, name: 'Action' };
   const minorGenre = { id: 599, name: '120' };
   const country = { id: 287, name: 'Argentina' };
@@ -26,7 +26,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
   const [updatedMajorGenre, setUpdatedMajorGenre] = useState(majorGenre);
   const [updatedMinorGenre, setUpdatedMinorGenre] = useState(minorGenre);
   const [updatedCountry, setUpdatedCountry] = useState(country);
-  // const [updatePersons, setUpdatePersons] = useState(persons);
+  const [updatePersons, setUpdatePersons] = useState(persons);
 
   const [availableMajorGenres, setAvailableMajorGenres] = useState<Genre[]>([]);
   const [availableMinorGenres, setAvailableMinorGenres] = useState<Genre[]>([]);
