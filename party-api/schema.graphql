@@ -13,7 +13,7 @@ type Query {
 	country(id: Int!): Country
 	majorGenres: [MajorGenre!]!
 	minorGenres: [MinorGenre!]!
-	artists: [Person!]!
+	artists(filter: PersonFilter): [Person!]!
 	artist(id: Int!): Person
 	groups: [Group!]!
 	group(id: Int!): Group	
@@ -64,6 +64,10 @@ input UpdatePersonInput {
 	dob: String!
 	countryId: Int!
 	groups: [Int]
+}
+
+input PersonFilter {
+	name: String
 }
 
 enum PersonType {

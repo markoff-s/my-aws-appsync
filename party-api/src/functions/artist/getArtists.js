@@ -1,6 +1,6 @@
 exports.getArtists = async (event, context, callback) => {
 	const { Client } = require('pg');
-	
+
 	const env = process.env;
 	const client = new Client({
 		user: env.USER,
@@ -11,7 +11,12 @@ exports.getArtists = async (event, context, callback) => {
 	});
 	await client.connect();
 
-	const data = await client.query(`
+	try {
+		let filterSql = "";
+		if (event.arguments && event.arguments.filter) {
+			filterSql = ` where "name" like '%${event.arguments.filter.name}%'`
+		}
+		const query = `
 	select id, "name",
 	CASE
 		WHEN "type" = 1 THEN 'NATURAL_PERSON'
@@ -19,11 +24,17 @@ exports.getArtists = async (event, context, callback) => {
 		ELSE 'UNDEFINED_PERSON'
 	END AS "type",
 		dob,
-		country_id as "countryId"
+		country_id as "countryId"	
 	from mydb.public.person
+	${filterSql}
 	order by name asc;
-	`);
-	await client.end();
+	`;
+		console.log(query);
+		const data = await client.query(query);
 
-	callback(null, data.rows);	
+		callback(null, data.rows);
+	}
+	finally {
+		await client.end();
+	}		
 }
