@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Input = styled.input`
-  padding: '.5rem 1rem';
+  padding: 0.5rem 1rem;
   &::placeholder {
     color: ${(props) => props.theme.colors.gray};
   }
