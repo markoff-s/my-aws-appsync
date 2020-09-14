@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import StyledForm from '../styled-components/Form';
 import Button from '../styled-components/Button';
-import API from '@aws-amplify/api';
+import API, { graphqlOperation } from '@aws-amplify/api';
 import { createGroup as CreateGroup } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
 import { Genre, Person } from '../types/ArtistTypes';
@@ -17,11 +17,11 @@ interface GroupPersonsData {
 
 const AddGroup: React.FC<Props> = ({ setGroups }) => {
   const [name, setName] = useState('');
-  const [type, setType] = useState('');
+  const [type, setType] = useState('BAND');
   const [dateFormed, setDateFormed] = useState('');
   const [majorGenre, setMajorGenre] = useState<number | string>('');
   const [minorGenre, setMinorGenre] = useState<number | string>('');
-  const [country, setCountry] = useState<number | string>('');
+  const [country, setCountry] = useState(1);
   const [availableMajorGenres, setAvailableMajorGenres] = useState<Genre[]>([]);
   const [availableMinorGenres, setAvailableMinorGenres] = useState<Genre[]>([]);
   const [availablePersons, setAvailablePersons] = useState<Person[]>([]);
@@ -38,7 +38,7 @@ const AddGroup: React.FC<Props> = ({ setGroups }) => {
   async function fetchPersons() {
     try {
       const personsData: any = await API.graphql({ query: queries.artists });
-      setAvailablePersons(personsData.data.persons);
+      setAvailablePersons(personsData.data.artists);
     } catch (err) {
       console.log('error: ', err);
     }
@@ -89,21 +89,22 @@ const AddGroup: React.FC<Props> = ({ setGroups }) => {
       name,
       type,
       dateFormed,
-      majorGenre,
-      minorGenre,
-      country,
-      persons: ['Test'],
+      majorGenreId: majorGenre,
+      minorGenreId: minorGenre,
+      countryId: Number(country),
+      // persons: ['Test'],
     };
     setGroups((prevState: any) => [...prevState, newGroup]);
     setName('');
-    setType('');
+    setType('BAND');
     setDateFormed('');
     setMajorGenre('');
     setMinorGenre('');
-    setCountry('');
+    setCountry(1);
 
     try {
-      await API.graphql({ query: CreateGroup, variables: { input: newGroup } });
+      console.log({ newGroup });
+      await API.graphql(graphqlOperation(CreateGroup, { input: newGroup }));
       console.log('Successfully added group');
     } catch (err) {
       console.log('error: ', err);
@@ -131,7 +132,8 @@ const AddGroup: React.FC<Props> = ({ setGroups }) => {
           value={majorGenre}
           onChange={(e) => setMajorGenre(e.target.value)}
         >
-          {availableMajorGenres.length &&
+          <option key={0}>Select a major genre</option>
+          {availableMajorGenres &&
             availableMajorGenres.map((genre) => (
               <option key={genre.id} value={genre.id}>
                 {genre.name}
@@ -146,7 +148,8 @@ const AddGroup: React.FC<Props> = ({ setGroups }) => {
           value={minorGenre}
           onChange={(e) => setMinorGenre(e.target.value)}
         >
-          {availableMinorGenres.length &&
+          <option key={0}>Select a minor genre</option>
+          {availableMinorGenres &&
             availableMinorGenres.map((genre) => (
               <option key={genre.id} value={genre.id}>
                 {genre.name}
@@ -169,7 +172,9 @@ const AddGroup: React.FC<Props> = ({ setGroups }) => {
         <option value={0}>Select a person</option>
         {availablePersons.length &&
           availablePersons.map((person: Person) => (
-            <option value={Number(person.id)}>{person.name}</option>
+            <option key={person.id} value={Number(person.id)}>
+              {person.name}
+            </option>
           ))}
       </select>
       {selectedPersons && (
