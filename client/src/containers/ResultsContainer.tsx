@@ -2,6 +2,7 @@ import React from 'react';
 import Card from '../styled-components/Card';
 import { Group, Person } from '../types/ArtistTypes';
 import Result from '../components/Result';
+import { v4 as uuid } from 'uuid';
 
 interface Props {
   filteredGroups: Group[];
@@ -20,7 +21,7 @@ const ResultsContainer: React.FC<Props> = ({
 }) => {
   const filteredGroupResults = filteredGroups.map((group) => (
     <Result
-      key={`${group.id}-${group.name}`}
+      key={uuid()}
       name={group.name}
       format="Band Name"
       country="Australia"
@@ -30,7 +31,7 @@ const ResultsContainer: React.FC<Props> = ({
   ));
   const filteredPersonResults = filteredPersons.map((person) => (
     <Result
-      key={`${person.id}-${person.name}`}
+      key={uuid()}
       name={person.name}
       format="Artist Name"
       country="China"
