@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../styled-components/Button';
-import AddArtist from '../components/AddArtist';
+import AddPerson from '../components/AddPerson';
 import AddGroup from '../components/AddGroup';
 import { Group, Person } from '../types/ArtistTypes';
 
@@ -28,7 +28,7 @@ const AddContainer: React.FC<Props> = ({ handleDisplayReset, setGroups, setPerso
         <Button onClick={handleToggle}>Add Artist</Button>
         <Button onClick={handleToggle}>Add Group</Button>
       </div>
-      {toggleArtist && <AddArtist setPersons={setPersons} />}
+      {toggleArtist && <AddPerson setPersons={setPersons} />}
       {toggleGroup && <AddGroup setGroups={setGroups} />}
     </div>
   );
