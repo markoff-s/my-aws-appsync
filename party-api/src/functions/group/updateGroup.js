@@ -1,4 +1,4 @@
-exports.updateArtist = async (event, context, callback) => {
+exports.updateGroup = async (event, context, callback) => {
 	console.log("----------- event --------------");
 	console.log(event);
 
@@ -17,15 +17,18 @@ exports.updateArtist = async (event, context, callback) => {
 	try {
 		const input = event.arguments.input;
 		const data = await client.query(`
-		update person 
-		set name = $1, type = $2, dob = $3, country_id =$4	
-		where id = $5;
+		update "group" 
+		set name = $1, type = $2, date_formed = $3, major_genre_id =$4, minor_genre_id = $5,
+		country_id = $6
+		where id = $7;
 	`, 
 	[
 		input.name, 
-		input.type === 'NATURAL_PERSON' ? 1 : 2, 
-		input.dob, 
-		input.countryId, 
+		input.type === 'BAND' ? 1 : 2, 
+		input.dateFormed, 
+		input.majorGenreId, 
+		input.minorGenreId,
+		input.countryId,
 		input.id
 	]);
 

@@ -1,0 +1,13 @@
+{
+    "arguments": {
+        "input": {
+            "id": 1002,
+            "name": "Update Test",
+            "type": 2,
+            "dateFormed": "2/2/2002",
+            "majorGenreId": 34,
+            "minorGenreId": 78,
+            "countryId": 33
+        }
+    }
+}

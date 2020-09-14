@@ -1,0 +1,12 @@
+{
+    "arguments": {
+        "input": {
+            "name": "Test Group",
+            "type": 1,
+            "dateFormed": "1/1/2000",
+            "majorGenreId": 11,
+            "minorGenreId": 45,
+            "countryId": 22
+        }
+    }
+}

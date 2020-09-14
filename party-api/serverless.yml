@@ -95,6 +95,18 @@ functions:
     handler: src/functions/group/getGroup.getGroup
     layers:      
       - ${self:custom.lambdaLayers.nodePostgres}
+  createGroup:
+    handler: src/functions/group/createGroup.createGroup
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
+  updateGroup:
+    handler: src/functions/group/updateGroup.updateGroup
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
+  deleteGroup:
+    handler: src/functions/group/deleteGroup.deleteGroup
+    layers:      
+      - ${self:custom.lambdaLayers.nodePostgres}
     
 # layers:
 #   nodePostgres:
@@ -181,6 +193,18 @@ custom:
         type: Query
         field: group
         response: false      
+      - dataSource: createGroupDS
+        type: Mutation
+        field: createGroup
+        response: false
+      - dataSource: updateGroupDS
+        type: Mutation
+        field: updateGroup
+        response: false
+      - dataSource: deleteGroupDS
+        type: Mutation
+        field: deleteGroup
+        response: false
     schema: schema.graphql
     dataSources:      
       # country      
@@ -249,6 +273,21 @@ custom:
         name: getGroupDS
         config:
           lambdaFunctionArn: { Fn::GetAtt: ["GetGroupLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: createGroupDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["CreateGroupLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: updateGroupDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["UpdateGroupLambdaFunction", Arn] }
+          serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
+      - type: AWS_LAMBDA
+        name: deleteGroupDS
+        config:
+          lambdaFunctionArn: { Fn::GetAtt: ["DeleteGroupLambdaFunction", Arn] }
           serviceRoleArn: { Fn::GetAtt: [AppSyncLambdaServiceRole, Arn] }
 
 

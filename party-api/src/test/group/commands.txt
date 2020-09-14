@@ -1,0 +1,8 @@
+# invoke locally with test payload
+slss invoke local -f getGroup --path src/test/group/getGroup.json
+
+slss invoke local -f createGroup --path src/test/group/createGroup.json
+
+slss invoke local -f deleteGroup --path src/test/group/deleteGroup.json
+
+slss invoke local -f updateGroup --path src/test/group/updateGroup.json

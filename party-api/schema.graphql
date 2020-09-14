@@ -4,6 +4,8 @@ type Mutation {
 	deleteArtist(id: Int!): Int!
 
 	createGroup(input: CreateGroupInput!): Group!
+	updateGroup(input: UpdateGroupInput!): Group!
+	deleteGroup(id: Int!): Int!
 }
 
 type Query {
@@ -74,9 +76,12 @@ type Group {
 	name: String!
 	type: GroupType!
 	dateFormed: String!
-	majorGenre: MajorGenre!
-	minorGenre: MinorGenre!
-	country: Country!
+	majorGenreId: Int
+	majorGenre: MajorGenre
+	minorGenreId: Int
+	minorGenre: MinorGenre
+	countryId: Int
+	country: Country
 	persons: [Person!]
 }
 
@@ -84,10 +89,19 @@ input CreateGroupInput {
 	name: String!
 	type: GroupType!
 	dateFormed: String!
+	majorGenreId: Int
+	minorGenreId: Int
+	countryId: Int
+}
+
+input UpdateGroupInput {
+	id: Int!
+	name: String!
+	type: GroupType!
+	dateFormed: String!
 	majorGenreId: Int!
 	minorGenreId: Int!
-	countryId: Int!
-	persons: [Int]
+	countryId: Int!	
 }
 
 enum GroupType {
