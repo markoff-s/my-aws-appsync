@@ -10,6 +10,7 @@ interface Props {
   displayResults: boolean;
   handleDisplayGroupScreen: (group: Group) => void;
   handleDisplayPersonScreen: (person: Person) => void;
+  loadingResults: boolean;
 }
 
 const ResultsContainer: React.FC<Props> = ({
@@ -18,23 +19,29 @@ const ResultsContainer: React.FC<Props> = ({
   displayResults,
   handleDisplayGroupScreen,
   handleDisplayPersonScreen,
+  loadingResults,
 }) => {
-  const filteredGroupResults = filteredGroups.map((group) => (
-    <Result
-      key={uuid()}
-      name={group.name}
-      format="Band Name"
-      country="Australia"
-      comments="Awesome group"
-      onClick={() => handleDisplayGroupScreen(group)}
-    />
-  ));
+  const filteredGroupResults = filteredGroups.map((group) => {
+    if (!group.country) {
+      console.log(group);
+    }
+    return (
+      <Result
+        key={uuid()}
+        name={group.name}
+        format="Band Name"
+        country={group.country ? group.country.name : 'Not found'}
+        comments="Awesome group"
+        onClick={() => handleDisplayGroupScreen(group)}
+      />
+    );
+  });
   const filteredPersonResults = filteredPersons.map((person) => (
     <Result
       key={uuid()}
       name={person.name}
       format="Artist Name"
-      country="China"
+      country={person.country ? person.country.name : 'Not found'}
       comments="Awesome person"
       onClick={() => handleDisplayPersonScreen(person)}
     />
