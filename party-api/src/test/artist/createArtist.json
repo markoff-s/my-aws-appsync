@@ -1,6 +1,11 @@
 {
-    "name": "Test",
-    "type": 1,
-    "dob": "1/1/2000",
-    "countryId": 22
+    "arguments": {
+        "input": {
+            "name": "Test Artist",
+            "type": 1,
+            "dob": "1/1/2000",
+            "countryId": 22,
+            "groups": [1,2,3,4,5]
+        }
+    }
 }

@@ -15,6 +15,7 @@ exports.createArtist = async (event, context, callback) => {
 	await client.connect();
 
 	try {
+		// insert artist
 		const input = event.arguments.input;
 		const data = await client.query(`
 		insert into person (name, type, dob, country_id) 
@@ -28,10 +29,22 @@ exports.createArtist = async (event, context, callback) => {
 			dob,
 			country_id as "countryId";	
 	`, [input.name, input.type === 'NATURAL_PERSON' ? 1 : 2, input.dob, input.countryId]);
+		const artist = data.rows[0];
 
-	callback(null, data.rows[0]);
+		// insert artist's groups
+		if (input.groups && input.groups.length > 0) {
+			const valuesString = input.groups.map(groupId => { return `(${groupId}, ${artist.id})` }).join(", ");
+			// console.log(valuesString);
+
+			await client.query(`
+		insert into group_member
+		values ${valuesString};
+	`);
+		}
+
+		callback(null, artist);
 	}
 	finally {
 		await client.end();
-	}	
+	}
 }
