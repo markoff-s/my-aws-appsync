@@ -5,9 +5,10 @@ import Input from '../styled-components/Input';
 interface Props {
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+  handleSearch: () => void;
 }
 
-const SearchContainer: React.FC<Props> = ({ searchTerm, setSearchTerm }) => {
+const SearchContainer: React.FC<Props> = ({ searchTerm, setSearchTerm, handleSearch }) => {
   return (
     <Card style={{ flexDirection: 'row' }} className="search-container">
       <select name="" id="">
@@ -19,7 +20,7 @@ const SearchContainer: React.FC<Props> = ({ searchTerm, setSearchTerm }) => {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <Button>Search</Button>
+      <Button onClick={handleSearch}>Search</Button>
     </Card>
   );
 };
