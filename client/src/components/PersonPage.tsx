@@ -1,10 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
+import { v4 as uuid } from 'uuid';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { Person, Group, Country } from '../types/ArtistTypes';
 import * as queries from '../graphql/queries';
-// TODO: import edit/delete mutations when they're ready
 import * as mutations from '../graphql/mutations';
 
 interface PersonProps {
@@ -101,21 +101,17 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
 
       return personsCopy;
     });
-
+    const updatedArtist = {
+      id,
+      name: updatedName,
+      type: updatedType,
+      dob: updatedDateOfBirth,
+      countryId: updatedCountry.id,
+      // groups: updatedGroups,
+    };
     try {
-      await API.graphql({
-        query: mutations.updateArtist,
-        variables: {
-          input: {
-            id,
-            name: updatedName,
-            type: updatedType,
-            dob: updatedDateOfBirth,
-            countryId: updatedCountry.id,
-            // groups: updatedGroups,
-          },
-        },
-      });
+      await API.graphql(graphqlOperation(mutations.updateArtist, { input: updatedArtist }));
+
       console.log('Successfully updated person');
     } catch (err) {
       console.log('error: ', err);
@@ -138,7 +134,15 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
       {toggleUpdatePerson ? (
         <Fragment>
           <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
-          <input type="text" value={updatedType} onChange={(e) => setUpdatedType(e.target.value)} />
+          <label htmlFor="type-select">Type</label>
+          <select
+            name="type-select"
+            value={updatedType}
+            onChange={(e) => setUpdatedType(e.target.value)}
+          >
+            <option value="NATURAL_PERSON">Natural Person</option>
+            <option value="UNNATURAL_PERSON">Unnatural Person</option>
+          </select>
           <input
             type="date"
             value={updatedDateOfBirth}
