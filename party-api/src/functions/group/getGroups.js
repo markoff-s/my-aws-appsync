@@ -19,9 +19,9 @@ exports.getGroups = async (event, context, callback) => {
 		ELSE 'UNDEFINED_GROUP'
 	END AS "type",
 		date_formed as "dateFormed",
-		major_genre_id,
-		minor_genre_id,
-		country_id
+		major_genre_id as "majorGenreId",
+		minor_genre_id as "minorGenreId",
+		country_id as "countryId"
 	from mydb.public.group
 	order by name asc;
 	`);
