@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import StyledForm from '../styled-components/Form';
 import Button from '../styled-components/Button';
-import API from '@aws-amplify/api';
-import { createPerson as CreatePerson } from '../graphql/mutations';
+import API, { graphqlOperation } from '@aws-amplify/api';
+import { createArtist as CreateArtist } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
 import { Country, Group } from '../types/ArtistTypes';
 
@@ -11,11 +11,11 @@ interface Props {
 }
 
 // TODO: flesh out logic for adding groups
-const AddArtist: React.FC<Props> = ({ setPersons }) => {
+const AddPerson: React.FC<Props> = ({ setPersons }) => {
   const [name, setName] = useState('');
-  const [type, setType] = useState('');
+  const [type, setType] = useState('NATURAL_PERSON');
   const [dob, setDob] = useState('');
-  const [country, setCountry] = useState<number | string>('');
+  const [country, setCountry] = useState(1);
   const [availableCountries, setAvailableCountries] = useState<Country[]>([]);
   const [availableGroups, setAvailableGroups] = useState<Group[]>();
   const [selectedGroups, setSelectedGroups] = useState<Group[]>([]);
@@ -27,13 +27,13 @@ const AddArtist: React.FC<Props> = ({ setPersons }) => {
 
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     e.preventDefault();
-    const newPerson = { name, type, dob, country };
+    const newPerson = { name, type, dob, countryId: country };
     setName('');
-    setType('');
+    setType('NATURAL_PERSON');
     setDob('');
-    setCountry('');
+    setCountry(1);
     try {
-      await API.graphql({ query: CreatePerson, variables: { input: newPerson } });
+      await API.graphql(graphqlOperation(CreateArtist, { input: newPerson }));
       console.log('Successfully added person');
     } catch (err) {
       console.log('error: ', err);
@@ -92,14 +92,19 @@ const AddArtist: React.FC<Props> = ({ setPersons }) => {
         value={type}
         onChange={(e) => setType(e.target.value)}
       />
+      <label htmlFor="type-select">Type</label>
+      <select name="type-select" value={type} onChange={(e) => setType(e.target.value)}>
+        <option value="NATURAL_PERSON">Natural Person</option>
+        <option value="UNNATURAL_PERSON">Unnatural Person</option>
+      </select>
       <input
         type="date"
         placeholder="Enter date of birth"
         value={dob}
         onChange={(e) => setDob(e.target.value)}
       />
-      <select value={country} onChange={(e) => setCountry(e.target.value)}>
-        {availableCountries.length &&
+      <select value={country} onChange={(e) => setCountry(Number(e.target.value))}>
+        {availableCountries &&
           availableCountries.map((country: Country) => (
             <option key={country.id} value={country.id}>
               {country.name}
@@ -110,7 +115,9 @@ const AddArtist: React.FC<Props> = ({ setPersons }) => {
         <option value={0}>Select a Group</option>
         {availableGroups &&
           availableGroups.map((group: Group) => (
-            <option value={Number(group.id)}>{group.name}</option>
+            <option key={group.id} value={Number(group.id)}>
+              {group.name}
+            </option>
           ))}
       </select>
       {selectedGroups && (
@@ -128,4 +135,4 @@ const AddArtist: React.FC<Props> = ({ setPersons }) => {
   );
 };
 
-export default AddArtist;
+export default AddPerson;
