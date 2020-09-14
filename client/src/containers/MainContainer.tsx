@@ -2,7 +2,6 @@ import React, { useState, useEffect, Fragment } from 'react';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import * as queries from '../graphql/queries';
-import * as mutations from '../graphql/mutations';
 import API from '@aws-amplify/api';
 import { Group, Person } from '../types/ArtistTypes';
 import SearchContainer from './SearchContainer';
@@ -23,6 +22,7 @@ const MainContainer = () => {
   const [displayAddScreen, setDisplayAddScreen] = useState(false);
   const [currentGroupData, setCurrentGroupData] = useState<Group | null>(null);
   const [currentPersonData, setCurrentPersonData] = useState<Person | null>();
+  const [loadingResults, setLoadingResults] = useState(false);
   const [error, setError] = useState(false);
 
   // TODO: incorporate React router logic here
@@ -35,33 +35,56 @@ const MainContainer = () => {
   }, []);
 
   // update filtered results based on search string
-  useEffect(() => {
-    console.log('updating filtered results');
-    if (searchTerm === '') {
-      fetchGroups();
-      fetchPersons();
-    } else updateResults();
-  }, [searchTerm]);
+  // useEffect(() => {
+  //   console.log('updating filtered results');
+  //   if (searchTerm === '') {
+  //     fetchGroups();
+  //     fetchPersons();
+  //   } else updateResults();
+  // }, [searchTerm]);
 
   // display search results if a valid string has been inputted
-  useEffect(() => {
-    if (searchTerm.trim() === '') {
-      setDisplayResults(false);
-      setFilteredGroups([]);
-      setFilteredPersons([]);
-    } else setDisplayResults(true);
-  }, [searchTerm]);
+  // useEffect(() => {
+  //   if (searchTerm.trim() === '') {
+  //     setDisplayResults(false);
+  //     setFilteredGroups([]);
+  //     setFilteredPersons([]);
+  //   } else setDisplayResults(true);
+  // }, [searchTerm]);
 
   // log current persons data
   useEffect(() => {
-    console.log({ persons });
-    console.log({ groups });
-  }, [persons]);
+    // console.log({ persons });
+    // console.log({ groups });
+    console.log({ filteredPersons });
+    console.log({ filteredGroups });
+  }, [filteredGroups, filteredPersons]);
+
+  // load all data when component mounts
+  useEffect(() => {
+    const loadDataonCompMount = async () => {
+      setLoadingResults(true);
+      await fetchGroups();
+      await fetchPersons();
+      setLoadingResults(false);
+      setDisplayResults(true);
+      console.log('you should see results now');
+    };
+    loadDataonCompMount();
+  }, []);
+
+  function handleSearch() {
+    setLoadingResults(true);
+    fetchGroups();
+    fetchPersons();
+    setLoadingResults(false);
+    setDisplayResults(true);
+  }
 
   async function fetchGroups() {
     try {
       const groupsData: any = await API.graphql({ query: queries.groups });
-      setGroups(groupsData.data.groups);
+      setFilteredGroups(groupsData.data.groups);
     } catch (err) {
       setError(true);
       console.log('error: ', err);
@@ -71,8 +94,7 @@ const MainContainer = () => {
   async function fetchPersons() {
     try {
       const personsData: any = await API.graphql({ query: queries.artists });
-      console.log(personsData.data.artists);
-      setPersons(personsData.data.artists);
+      setFilteredPersons(personsData.data.artists);
       console.log('got artist data');
     } catch (err) {
       setError(true);
@@ -134,23 +156,32 @@ const MainContainer = () => {
           handleDisplayReset={handleDisplayReset}
         />
       )}
-      {!displayGroupScreen && !displayPersonScreen && !displayAddScreen && !error && (
-        <Fragment>
-          <SearchContainer searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          {totalResults > 0 && (
-            <Card>
-              <span className="bold">{totalResults}</span> Results
-            </Card>
-          )}
-          <ResultsContainer
-            filteredGroups={filteredGroups}
-            filteredPersons={filteredPersons}
-            displayResults={displayResults}
-            handleDisplayGroupScreen={handleDisplayGroupScreen}
-            handleDisplayPersonScreen={handleDisplayPersonScreen}
-          />
-        </Fragment>
-      )}
+      {!displayGroupScreen &&
+        !displayPersonScreen &&
+        !displayAddScreen &&
+        !error &&
+        !loadingResults && (
+          <Fragment>
+            <SearchContainer
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              handleSearch={handleSearch}
+            />
+            {totalResults > 0 && (
+              <Card>
+                <span className="bold">{totalResults}</span> Results
+              </Card>
+            )}
+            <ResultsContainer
+              filteredGroups={filteredGroups}
+              filteredPersons={filteredPersons}
+              displayResults={displayResults}
+              handleDisplayGroupScreen={handleDisplayGroupScreen}
+              handleDisplayPersonScreen={handleDisplayPersonScreen}
+              loadingResults={loadingResults}
+            />
+          </Fragment>
+        )}
       {displayGroupScreen && !displayPersonScreen && currentGroupData && !error && (
         <GroupPage
           group={currentGroupData}
