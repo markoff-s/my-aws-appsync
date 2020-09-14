@@ -1,10 +1,9 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
-import API from '@aws-amplify/api';
+import API, { graphqlOperation } from '@aws-amplify/api';
 import { Group, Genre, Country } from '../types/ArtistTypes';
 import * as queries from '../graphql/queries';
-// TODO: import edit/delete mutations when they're ready
 import * as mutations from '../graphql/mutations';
 
 interface GroupProps {
@@ -40,8 +39,9 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
 
   const handleDelete = async () => {
     setGroups((prevState: any) => prevState.filter((artist: any) => artist.id !== id));
+    console.log({ id });
     try {
-      await API.graphql({ query: mutations.deleteGroup, variables: { input: { id } } });
+      await API.graphql(graphqlOperation(mutations.deleteGroup, { id }));
       console.log('Successfully deleted artist');
     } catch (err) {
       console.log('error: ', err);
@@ -74,9 +74,9 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
             name: updatedName,
             type: updatedType,
             dateFormed: updatedDateFormed,
-            majorGenre: updatedMajorGenre,
-            minorGenre: updatedMinorGenre,
-            country: updatedCountry,
+            majorGenreId: updatedMajorGenre.id,
+            minorGenreId: updatedMinorGenre.id,
+            country: updatedCountry.id,
             // persons: updatedPersons
           },
         },

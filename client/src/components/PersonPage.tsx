@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
-import API from '@aws-amplify/api';
+import API, { graphqlOperation } from '@aws-amplify/api';
 import { Person, Group, Country } from '../types/ArtistTypes';
 import * as queries from '../graphql/queries';
 // TODO: import edit/delete mutations when they're ready
@@ -28,8 +28,9 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
 
   async function handleDelete() {
     setPersons((prevState: any) => prevState.filter((person: Person) => person.id !== Number(id)));
+    console.log({ id });
     try {
-      await API.graphql({ query: mutations.deletePerson, variables: { input: { id } } });
+      await API.graphql(graphqlOperation(mutations.deleteArtist, { id }));
       console.log('Successfully deleted artist');
     } catch (err) {
       console.log('error: ', err);
@@ -103,15 +104,15 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
 
     try {
       await API.graphql({
-        query: mutations.updatePerson,
+        query: mutations.updateArtist,
         variables: {
           input: {
             id,
             name: updatedName,
             type: updatedType,
             dob: updatedDateOfBirth,
-            country: updatedCountry,
-            groups: updatedGroups,
+            countryId: updatedCountry.id,
+            // groups: updatedGroups,
           },
         },
       });

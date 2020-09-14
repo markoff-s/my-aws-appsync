@@ -1,9 +1,18 @@
 /* tslint:disable */
 /* eslint-disable */
+// this is an auto generated file. This will be overwritten
 
 export const countries = /* GraphQL */ `
   query Countries {
     countries {
+      id
+      name
+    }
+  }
+`;
+export const country = /* GraphQL */ `
+  query Country($id: Int!) {
+    country(id: $id) {
       id
       name
     }
@@ -32,26 +41,7 @@ export const artists = /* GraphQL */ `
       name
       type
       dob
-      country {
-        id
-        name
-      }
-      # groups {
-      #   id
-      #   name
-      #   type
-      #   dateFormed
-      # }
-    }
-  }
-`;
-export const person = /* GraphQL */ `
-  query Person($id: ID!) {
-    person(id: $id) {
-      id
-      name
-      type
-      dob
+      countryId
       country {
         id
         name
@@ -61,11 +51,37 @@ export const person = /* GraphQL */ `
         name
         type
         dateFormed
+        majorGenreId
+        minorGenreId
+        countryId
       }
     }
   }
 `;
-
+export const artist = /* GraphQL */ `
+  query Artist($id: Int!) {
+    artist(id: $id) {
+      id
+      name
+      type
+      dob
+      countryId
+      country {
+        id
+        name
+      }
+      groups {
+        id
+        name
+        type
+        dateFormed
+        majorGenreId
+        minorGenreId
+        countryId
+      }
+    }
+  }
+`;
 export const groups = /* GraphQL */ `
   query Groups {
     groups {
@@ -73,42 +89,17 @@ export const groups = /* GraphQL */ `
       name
       type
       dateFormed
-      # majorGenre {
-      #   id
-      #   name
-      # }
-      # minorGenre {
-      #   id
-      #   name
-      # }
-      # country {
-      #   id
-      #   name
-      # }
-      # persons {
-      #   id
-      #   name
-      #   type
-      #   dob
-      # }
-    }
-  }
-`;
-export const group = /* GraphQL */ `
-  query Group($id: ID!) {
-    group(id: $id) {
-      id
-      name
-      type
-      dateFormed
+      majorGenreId
       majorGenre {
         id
         name
       }
+      minorGenreId
       minorGenre {
         id
         name
       }
+      countryId
       country {
         id
         name
@@ -118,23 +109,40 @@ export const group = /* GraphQL */ `
         name
         type
         dob
+        countryId
       }
     }
   }
 `;
-export const authors = /* GraphQL */ `
-  query Authors {
-    authors {
+export const group = /* GraphQL */ `
+  query Group($id: Int!) {
+    group(id: $id) {
       id
       name
-    }
-  }
-`;
-export const books = /* GraphQL */ `
-  query Books {
-    books {
-      id
-      title
+      type
+      dateFormed
+      majorGenreId
+      majorGenre {
+        id
+        name
+      }
+      minorGenreId
+      minorGenre {
+        id
+        name
+      }
+      countryId
+      country {
+        id
+        name
+      }
+      persons {
+        id
+        name
+        type
+        dob
+        countryId
+      }
     }
   }
 `;
