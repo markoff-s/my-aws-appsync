@@ -50,6 +50,14 @@ export type UpdateGroupInput = {
   countryId: number,
 };
 
+export type PersonFilter = {
+  name?: string | null,
+};
+
+export type GroupFilter = {
+  name?: string | null,
+};
+
 export type CreateArtistMutationVariables = {
   input: CreatePersonInput,
 };
@@ -242,6 +250,10 @@ export type MinorGenresQuery = {
   } >,
 };
 
+export type ArtistsQueryVariables = {
+  filter?: PersonFilter | null,
+};
+
 export type ArtistsQuery = {
   artists:  Array< {
     __typename: "Person",
@@ -296,6 +308,10 @@ export type ArtistQuery = {
       countryId: number | null,
     } > | null,
   } | null,
+};
+
+export type GroupsQueryVariables = {
+  filter?: GroupFilter | null,
 };
 
 export type GroupsQuery = {

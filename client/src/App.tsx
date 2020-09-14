@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import theme from './styled-components/Theme';
 import PreLogin from './components/PreLogin';
@@ -8,7 +8,7 @@ import AppContainer from './containers/AppContainer';
 import './scss/app.scss';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   return (
     <ThemeProvider theme={theme}>
       <div className="app">
