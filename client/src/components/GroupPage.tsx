@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
+import { v4 as uuid } from 'uuid';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import API, { graphqlOperation } from '@aws-amplify/api';
@@ -65,22 +66,22 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
 
       return groupsCopy;
     });
+    const updatedGroup = {
+      id,
+      name: updatedName,
+      type: updatedType,
+      dateFormed: updatedDateFormed,
+      majorGenreId: updatedMajorGenre.id,
+      minorGenreId: updatedMinorGenre.id,
+      countryId: updatedCountry.id,
+      // persons: updatedPersons
+    };
     try {
-      await API.graphql({
-        query: mutations.updateGroup,
-        variables: {
-          input: {
-            id,
-            name: updatedName,
-            type: updatedType,
-            dateFormed: updatedDateFormed,
-            majorGenreId: updatedMajorGenre.id,
-            minorGenreId: updatedMinorGenre.id,
-            country: updatedCountry.id,
-            // persons: updatedPersons
-          },
-        },
-      });
+      await API.graphql(
+        graphqlOperation(mutations.updateGroup, {
+          input: updatedGroup,
+        })
+      );
       console.log('Successfully updated artist');
     } catch (err) {
       console.log('error: ', err);
@@ -153,17 +154,17 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
             onChange={(e) => setUpdatedDateFormed(e.target.value)}
           />
           <select value={majorGenre.id} onChange={(e) => handleUpdateMajorGenre(e)}>
-            {availableMajorGenres.length &&
+            {availableMajorGenres &&
               availableMajorGenres.map((country: Country) => (
-                <option key={`${majorGenre.id}-${majorGenre.name}`} value={majorGenre.id}>
+                <option key={uuid()} value={majorGenre.id}>
                   {majorGenre.name}
                 </option>
               ))}
           </select>
           <select value={minorGenre.id} onChange={(e) => handleUpdateMinorGenre(e)}>
-            {availableMinorGenres.length &&
+            {availableMinorGenres &&
               availableMinorGenres.map((country: Country) => (
-                <option key={`${minorGenre.id}-${minorGenre.name}`} value={minorGenre.id}>
+                <option key={uuid()} value={minorGenre.id}>
                   {minorGenre.name}
                 </option>
               ))}
@@ -172,7 +173,7 @@ const GroupPage: React.FC<GroupProps> = ({ group, setGroups, handleGoBack }) => 
           <select value={updatedCountry.id} onChange={handleUpdateCountry}>
             {availableCountries.length &&
               availableCountries.map((country: Country) => (
-                <option key={`${country.id}-${country.name}`} value={country.id}>
+                <option key={uuid()} value={country.id}>
                   {country.name}
                 </option>
               ))}
