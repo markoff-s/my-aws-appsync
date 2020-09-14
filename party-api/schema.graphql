@@ -15,7 +15,7 @@ type Query {
 	minorGenres: [MinorGenre!]!
 	artists(filter: PersonFilter): [Person!]!
 	artist(id: Int!): Person
-	groups: [Group!]!
+	groups(filter: GroupFilter): [Group!]!
 	group(id: Int!): Group	
 }
 
@@ -106,6 +106,10 @@ input UpdateGroupInput {
 	majorGenreId: Int!
 	minorGenreId: Int!
 	countryId: Int!	
+}
+
+input GroupFilter {
+	name: String
 }
 
 enum GroupType {

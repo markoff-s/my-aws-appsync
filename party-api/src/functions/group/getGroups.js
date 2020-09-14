@@ -1,6 +1,6 @@
 exports.getGroups = async (event, context, callback) => {
 	const { Client } = require('pg');
-	
+
 	const env = process.env;
 	const client = new Client({
 		user: env.USER,
@@ -11,7 +11,13 @@ exports.getGroups = async (event, context, callback) => {
 	});
 	await client.connect();
 
-	const data = await client.query(`
+	try {
+		let filterSql = "";
+		if (event.arguments && event.arguments.filter) {
+			filterSql = ` where "name" like '%${event.arguments.filter.name}%'`
+		}
+
+		const query = `
 	select id, "name",
 	CASE
 		WHEN "type" = 1 THEN 'BAND'
@@ -23,9 +29,14 @@ exports.getGroups = async (event, context, callback) => {
 		minor_genre_id as "minorGenreId",
 		country_id as "countryId"
 	from mydb.public.group
+	${filterSql}
 	order by name asc;
-	`);
-	await client.end();
+	`;
+		const data = await client.query(query);
 
-	callback(null, data.rows);	
+		callback(null, data.rows);
+	}
+	finally {
+		await client.end();
+	}
 }
