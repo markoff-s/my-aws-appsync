@@ -7,7 +7,7 @@ const Button = styled.button`
       : props.theme.colors.accentPrimary};
   color: ${(props) =>
     props.color === 'light' ? props.theme.colors.accentPrimary2 : props.theme.colors.white};
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   border: ${(props) =>
     props.color === 'light'
       ? props.theme.colors.accentSecondary
