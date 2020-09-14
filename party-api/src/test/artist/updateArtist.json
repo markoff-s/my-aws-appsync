@@ -5,7 +5,8 @@
             "name": "Update Test",
             "type": 2,
             "dob": "2/2/2002",
-            "countryId": 33
+            "countryId": 33,
+            "groups": [11,12,13,14,15]
         }
     }
 }
