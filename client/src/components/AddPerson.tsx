@@ -80,7 +80,7 @@ const AddPerson: React.FC<Props> = ({ setMessage }) => {
   }
 
   return (
-    <StyledForm>
+    <StyledForm className="add-person-form">
       <input
         type="text"
         placeholder="Enter artist's name"
