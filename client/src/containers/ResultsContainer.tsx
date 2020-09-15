@@ -2,47 +2,44 @@ import React from 'react';
 import Card from '../styled-components/Card';
 import { Group, Person } from '../types/ArtistTypes';
 import Result from '../components/Result';
-import { v4 as uuid } from 'uuid';
 
 interface Props {
-  filteredGroups: Group[];
-  filteredPersons: Person[];
-  displayResults: boolean;
+  groups: Group[];
+  persons: Person[];
   handleDisplayGroupScreen: (group: Group) => void;
   handleDisplayPersonScreen: (person: Person) => void;
-  loadingResults: boolean;
 }
 
 const ResultsContainer: React.FC<Props> = ({
-  filteredGroups,
-  filteredPersons,
-  displayResults,
+  groups,
+  persons,
   handleDisplayGroupScreen,
   handleDisplayPersonScreen,
-  loadingResults,
 }) => {
-  const filteredGroupResults = filteredGroups.map((group) => (
+  const groupResults = groups.map((group) => (
     <Result
-      key={uuid()}
+      key={`${group.name}-${group.id}`}
+      id={group.id}
       name={group.name}
+      type="group"
       format="Band Name"
       country={group.country ? group.country.name : 'Not found'}
       comments="Awesome group"
-      onClick={() => handleDisplayGroupScreen(group)}
     />
   ));
-  const filteredPersonResults = filteredPersons.map((person) => (
+  const personResults = persons.map((person) => (
     <Result
-      key={uuid()}
+      key={`${person.name}-${person.id}`}
+      id={person.id}
       name={person.name}
+      type="artist"
       format="Artist Name"
       country={person.country ? person.country.name : 'Not found'}
       comments="Awesome person"
-      onClick={() => handleDisplayPersonScreen(person)}
     />
   ));
 
-  return displayResults ? (
+  return (
     <div className="results-container">
       <div className="results__categories">
         <p>Artist Name</p>
@@ -51,14 +48,10 @@ const ResultsContainer: React.FC<Props> = ({
         <p>Internal Comments</p>
       </div>
       <Card className="results-grid">
-        {filteredGroupResults}
-        {filteredPersonResults}
+        {groupResults}
+        {personResults}
       </Card>
     </div>
-  ) : (
-    <Card>
-      <p>Search Artists, ISNI, ID</p>
-    </Card>
   );
 };
 

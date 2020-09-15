@@ -35,8 +35,8 @@ export const minorGenres = /* GraphQL */ `
   }
 `;
 export const artists = /* GraphQL */ `
-  query Artists {
-    artists {
+  query Artists($filter: PersonFilter) {
+    artists(filter: $filter) {
       id
       name
       type
@@ -83,8 +83,8 @@ export const artist = /* GraphQL */ `
   }
 `;
 export const groups = /* GraphQL */ `
-  query Groups {
-    groups {
+  query Groups($filter: GroupFilter) {
+    groups(filter: $filter) {
       id
       name
       type

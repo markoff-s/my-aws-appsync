@@ -6,16 +6,7 @@ import { createGroup as CreateGroup } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
 import { Genre, Person } from '../types/ArtistTypes';
 
-interface Props {
-  setGroups: React.Dispatch<React.SetStateAction<any>>;
-}
-
-interface GroupPersonsData {
-  persons: string;
-  prevState: [string];
-}
-
-const AddGroup: React.FC<Props> = ({ setGroups }) => {
+const AddGroup = () => {
   const [name, setName] = useState('');
   const [type, setType] = useState('BAND');
   const [dateFormed, setDateFormed] = useState('');
@@ -94,7 +85,6 @@ const AddGroup: React.FC<Props> = ({ setGroups }) => {
       countryId: Number(country),
       // persons: ['Test'],
     };
-    setGroups((prevState: any) => [...prevState, newGroup]);
     setName('');
     setType('BAND');
     setDateFormed('');
@@ -103,7 +93,6 @@ const AddGroup: React.FC<Props> = ({ setGroups }) => {
     setCountry(1);
 
     try {
-      console.log({ newGroup });
       await API.graphql(graphqlOperation(CreateGroup, { input: newGroup }));
       console.log('Successfully added group');
     } catch (err) {

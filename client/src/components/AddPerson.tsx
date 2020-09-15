@@ -6,12 +6,8 @@ import { createArtist as CreateArtist } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
 import { Country, Group } from '../types/ArtistTypes';
 
-interface Props {
-  setPersons: React.Dispatch<React.SetStateAction<any>>;
-}
-
 // TODO: flesh out logic for adding groups
-const AddPerson: React.FC<Props> = ({ setPersons }) => {
+const AddPerson = () => {
   const [name, setName] = useState('');
   const [type, setType] = useState('NATURAL_PERSON');
   const [dob, setDob] = useState('');

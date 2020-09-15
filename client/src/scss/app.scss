@@ -70,6 +70,11 @@ $grid-cols-desktop: repeat(4, 1fr);
     display: grid;
     grid-template-columns: $grid-cols-desktop;
   }
+  .results-grid a {
+    text-decoration: none;
+    color: $black;
+    width: 100%;
+  }
 
   .result {
     width: 100%;
