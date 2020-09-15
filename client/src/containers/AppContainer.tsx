@@ -10,14 +10,7 @@ interface Props {
 }
 
 const AppContainer: React.FC<Props> = ({ isLoggedIn, setIsLoggedIn }) => {
-  return !isLoggedIn ? (
-    <OktaLogin setIsLoggedIn={setIsLoggedIn} />
-  ) : (
-    <Fragment>
-      <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      <MainContainer />
-    </Fragment>
-  );
+  return !isLoggedIn ? <OktaLogin setIsLoggedIn={setIsLoggedIn} /> : <MainContainer />;
 };
 
 export default AppContainer;
