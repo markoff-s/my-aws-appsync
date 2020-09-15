@@ -3,7 +3,7 @@ import API, { graphqlOperation } from '@aws-amplify/api';
 import { Link } from 'react-router-dom';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
-import Spinner from '../styled-components/Spinner';
+import Spinner from '../components/Spinner';
 import * as queries from '../graphql/queries';
 import { Group, Person } from '../types/ArtistTypes';
 import SearchContainer from './SearchContainer';
@@ -153,12 +153,20 @@ const MainContainer = () => {
       <Link to="/add">
         <Button>Add Artist or Group</Button>
       </Link>
-      {error && <h2>Nothing Found. Please Adjust Your Search.</h2>}
-      {isLoading && <h2>Loading data!</h2>}
+      {error && (
+        <Card>
+          <h2>Nothing Found. Please Adjust Your Search.</h2>
+        </Card>
+      )}
+      {isLoading && (
+        <Card>
+          <Spinner />
+        </Card>
+      )}
       {displayAddScreen && !displayGroupScreen && !displayPersonScreen && !error && (
         <AddContainer />
       )}
-      {!displayGroupScreen && !displayPersonScreen && !displayAddScreen && !error && (
+      {!displayGroupScreen && !displayPersonScreen && !displayAddScreen && !error && !isLoading && (
         <Fragment>
           {totalResults > 0 && (
             <Card>
