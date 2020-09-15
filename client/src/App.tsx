@@ -5,6 +5,7 @@ import theme from './styled-components/Theme';
 import PreLogin from './components/PreLogin';
 import Header from './components/Header';
 import AppContainer from './containers/AppContainer';
+import AddContainer from './containers/AddContainer';
 import './scss/app.scss';
 
 const App = () => {
@@ -20,6 +21,10 @@ const App = () => {
             </Route>
             <Route path="/search">
               <AppContainer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+            </Route>
+            <Route path="/add">
+              <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+              <AddContainer />
             </Route>
           </Switch>
         </Router>
