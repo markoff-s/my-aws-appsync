@@ -18,7 +18,6 @@ import Amplify from 'aws-amplify';
 // });
 
 // API key access
-// trigger aplify build
 Amplify.configure({
   aws_project_region: 'us-east-1',
   aws_appsync_graphqlEndpoint: process.env.REACT_APP_APPSYNC_ENDPOINT,
