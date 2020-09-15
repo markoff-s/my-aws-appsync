@@ -6,7 +6,11 @@ import { createGroup as CreateGroup } from '../graphql/mutations';
 import * as queries from '../graphql/queries';
 import { Genre, Person } from '../types/ArtistTypes';
 
-const AddGroup = () => {
+interface Props {
+  setMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const AddGroup: React.FC<Props> = ({ setMessage }) => {
   const [name, setName] = useState('');
   const [type, setType] = useState('BAND');
   const [dateFormed, setDateFormed] = useState('');
@@ -95,6 +99,7 @@ const AddGroup = () => {
     try {
       await API.graphql(graphqlOperation(CreateGroup, { input: newGroup }));
       console.log('Successfully added group');
+      setMessage('Successfully added group');
     } catch (err) {
       console.log('error: ', err);
     }
@@ -104,7 +109,7 @@ const AddGroup = () => {
     <StyledForm>
       <input
         type="text"
-        placeholder="Enter artist name"
+        placeholder="Enter group's name"
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
