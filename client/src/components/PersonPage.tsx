@@ -1,36 +1,56 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { v4 as uuid } from 'uuid';
+import { Link } from 'react-router-dom';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
+import Spinner from '../components/Spinner';
 import API, { graphqlOperation } from '@aws-amplify/api';
 import { Person, Group, Country } from '../types/ArtistTypes';
 import * as queries from '../graphql/queries';
 import * as mutations from '../graphql/mutations';
 
 interface PersonProps {
-  person: Person;
-  setPersons: React.Dispatch<React.SetStateAction<any>>;
-  handleGoBack: () => void;
+  id: { id: number };
 }
 
-const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack }) => {
-  const { id, name, type, dob, groups } = person;
-  const country = { id: 73, name: 'China' };
+const PersonPage: React.FC<PersonProps> = ({ id }) => {
+  const [personData, setPersonData] = useState<Person | null>(null);
   const [toggleUpdatePerson, setToggleUpdatePerson] = useState(false);
-  const [updatedName, setUpdatedName] = useState(name);
-  const [updatedType, setUpdatedType] = useState(type);
-  const [updatedDateOfBirth, setUpdatedDateOfBirth] = useState(dob);
-  const [updatedCountry, setUpdatedCountry] = useState(country);
-  const [updatedGroups, setUpdatedGroups] = useState<Group[]>(groups);
+  const [isLoading, setIsLoading] = useState(false);
+  const [updatedName, setUpdatedName] = useState('');
+  const [updatedType, setUpdatedType] = useState('');
+  const [updatedDateOfBirth, setUpdatedDateOfBirth] = useState('');
+  const [updatedCountry, setUpdatedCountry] = useState<Country>({ id: 0, name: '' });
+  const [updatedGroups, setUpdatedGroups] = useState<Group[]>([]);
 
   const [availableCountries, setAvailableCountries] = useState<Country[]>([]);
   const [availableGroups, setAvailableGroups] = useState<Group[]>();
 
-  async function handleDelete() {
-    setPersons((prevState: any) => prevState.filter((person: Person) => person.id !== Number(id)));
-    console.log({ id });
+  // fetch all data for the person
+  useEffect(() => {
+    queryPersonData();
+  }, []);
+
+  async function queryPersonData() {
     try {
-      await API.graphql(graphqlOperation(mutations.deleteArtist, { id }));
+      setIsLoading(true);
+      const personDataResults: any = await API.graphql(
+        graphqlOperation(queries.artist, { id: id.id })
+      );
+      console.log(personDataResults);
+      setPersonData(personDataResults.data.artist);
+      resetUpdateData();
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleDelete() {
+    // setPersons((prevState: any) => prevState.filter((person: Person) => person.id !== Number(id)));
+    // console.log({ id });
+    try {
+      await API.graphql(graphqlOperation(mutations.deleteArtist, { id: id.id }));
       console.log('Successfully deleted artist');
     } catch (err) {
       console.log('error: ', err);
@@ -87,20 +107,6 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
   }
 
   async function handleUpdate() {
-    setPersons((prevState: Person[]) => {
-      const updateIdx = prevState.findIndex((person: Person) => person.id === id);
-      const updatedPerson = { ...prevState[updateIdx] };
-      updatedPerson.name = updatedName;
-      updatedPerson.type = updatedType;
-      updatedPerson.dob = updatedDateOfBirth;
-      updatedPerson.country = updatedCountry;
-      // updatedPerson.groups = updatedGroups;
-
-      const personsCopy = [...prevState];
-      personsCopy[updateIdx] = updatedPerson;
-
-      return personsCopy;
-    });
     const updatedArtist = {
       id,
       name: updatedName,
@@ -119,44 +125,58 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
     setToggleUpdatePerson(false);
   }
 
-  const handleUpdateToggle = () => {
-    setToggleUpdatePerson((prevState) => !prevState);
-    setUpdatedName(name);
-    setUpdatedType(type);
-    setUpdatedDateOfBirth(dob);
-    setUpdatedCountry(country);
-    // setUpdatedGroups(groups);
-  };
+  function resetUpdateData() {
+    if (personData) {
+      setToggleUpdatePerson((prevState) => !prevState);
+      setUpdatedName(personData.name);
+      setUpdatedType(personData.type);
+      setUpdatedDateOfBirth(personData.dob);
+      setUpdatedCountry(personData.country);
+      // setUpdatedGroups(personData.groups);
+    }
+  }
 
   return (
     <Card>
-      <Button onClick={handleGoBack}>Go Back</Button>
-      {toggleUpdatePerson ? (
-        <Fragment>
-          <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
-          <label htmlFor="type-select">Type</label>
-          <select
-            name="type-select"
-            value={updatedType}
-            onChange={(e) => setUpdatedType(e.target.value)}
-          >
-            <option value="NATURAL_PERSON">Natural Person</option>
-            <option value="UNNATURAL_PERSON">Unnatural Person</option>
-          </select>
-          <input
-            type="date"
-            value={updatedDateOfBirth}
-            onChange={(e) => setUpdatedDateOfBirth(e.target.value)}
-          />
-          <select value={updatedCountry.id} onChange={handleUpdateCountry}>
-            {availableCountries.length &&
-              availableCountries.map((country: Country) => (
-                <option key={country.id} value={country.id}>
-                  {country.name}
-                </option>
-              ))}
-          </select>
-          {/* <select value="" onChange={addGroup}>
+      <Link to="/search">
+        <Button>Go Back</Button>
+      </Link>
+      {isLoading && (
+        <Card>
+          <Spinner />
+        </Card>
+      )}
+      {personData &&
+        (toggleUpdatePerson ? (
+          <Fragment>
+            <input
+              type="text"
+              value={updatedName}
+              onChange={(e) => setUpdatedName(e.target.value)}
+            />
+            <label htmlFor="type-select">Type</label>
+            <select
+              name="type-select"
+              value={updatedType}
+              onChange={(e) => setUpdatedType(e.target.value)}
+            >
+              <option value="NATURAL_PERSON">Natural Person</option>
+              <option value="UNNATURAL_PERSON">Unnatural Person</option>
+            </select>
+            <input
+              type="date"
+              value={updatedDateOfBirth}
+              onChange={(e) => setUpdatedDateOfBirth(e.target.value)}
+            />
+            <select value={updatedCountry.id} onChange={handleUpdateCountry}>
+              {availableCountries.length &&
+                availableCountries.map((country: Country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.name}
+                  </option>
+                ))}
+            </select>
+            {/* <select value="" onChange={addGroup}>
             <option value={0}>Select a Group</option>
             {availableGroups &&
               availableGroups.map((group: Group) => (
@@ -173,28 +193,28 @@ const PersonPage: React.FC<PersonProps> = ({ person, setPersons, handleGoBack })
               ))}
             </ul>
           )} */}
-          <Button onClick={handleUpdate}>Submit Changes</Button>
-          <Button color={'light'} onClick={handleUpdateToggle}>
-            Cancel Edit
-          </Button>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <h3>{name}</h3>
-          <p>{type}</p>
-          <p>{dob}</p>
-          <p>{country.name}</p>
-          {/* <ul>
+            <Button onClick={handleUpdate}>Submit Changes</Button>
+            <Button color={'light'} onClick={resetUpdateData}>
+              Cancel Edit
+            </Button>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <h3>{personData.name}</h3>
+            <p>{personData.type}</p>
+            <p>{personData.dob}</p>
+            <p>{personData.country ? personData.country.name : 'none found'}</p>
+            {/* <ul>
             {groups.map((group) => (
               <li key={group.id}>{group.name}</li>
             ))}
           </ul> */}
-          <Button onClick={handleUpdateToggle}>Edit Artist Info</Button>
-          <Button color={'light'} onClick={handleDelete}>
-            Delete
-          </Button>
-        </Fragment>
-      )}
+            <Button onClick={() => setToggleUpdatePerson(true)}>Edit Artist Info</Button>
+            <Button color={'light'} onClick={handleDelete}>
+              Delete
+            </Button>
+          </Fragment>
+        ))}
     </Card>
   );
 };
