@@ -19,21 +19,23 @@ const ResultsContainer: React.FC<Props> = ({
   const groupResults = groups.map((group) => (
     <Result
       key={`${group.name}-${group.id}`}
+      id={group.id}
       name={group.name}
+      type="group"
       format="Band Name"
       country={group.country ? group.country.name : 'Not found'}
       comments="Awesome group"
-      onClick={() => handleDisplayGroupScreen(group)}
     />
   ));
   const personResults = persons.map((person) => (
     <Result
       key={`${person.name}-${person.id}`}
+      id={person.id}
       name={person.name}
+      type="artist"
       format="Artist Name"
       country={person.country ? person.country.name : 'Not found'}
       comments="Awesome person"
-      onClick={() => handleDisplayPersonScreen(person)}
     />
   ));
 
