@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { v4 as uuid } from 'uuid';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
@@ -15,6 +16,7 @@ interface GroupProps {
 
 const GroupPage: React.FC<GroupProps> = ({ id }) => {
   const [groupData, setGroupData] = useState<Group | null>(null);
+  const [groupDeleted, setGroupDeleted] = useState(false);
   const [toggleUpdateGroup, setToggleUpdateGroup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [updatedName, setUpdatedName] = useState('');
@@ -41,32 +43,33 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
   }, []);
 
   async function queryGroupData() {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const groupDataResults: any = await API.graphql(
         graphqlOperation(queries.group, { id: id.id })
       );
-      console.log({ groupDataResults });
       setGroupData(groupDataResults.data.group);
-      resetUpdateData();
-      setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   }
 
   async function handleDelete() {
+    setIsLoading(true);
     try {
       await API.graphql(graphqlOperation(mutations.deleteGroup, { id: id.id }));
       console.log('Successfully deleted artist');
+      setGroupDeleted(true);
     } catch (err) {
       console.log('error: ', err);
     }
+    setIsLoading(false);
   }
 
   async function handleUpdate() {
     const updatedGroup = {
-      id,
+      id: id.id,
       name: updatedName,
       type: updatedType,
       dateFormed: updatedDateFormed,
@@ -81,34 +84,41 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
           input: updatedGroup,
         })
       );
-      console.log('Successfully updated artist');
+      console.log('Successfully updated group');
+      setToggleUpdateGroup(false);
+      queryGroupData();
     } catch (err) {
       console.log('error: ', err);
+      setToggleUpdateGroup(false);
     }
-    setToggleUpdateGroup(false);
   }
 
   // reset update field values when toggling between read and update mode
   function resetUpdateData() {
     if (groupData) {
-      setToggleUpdateGroup((prevState) => !prevState);
       setUpdatedName(groupData.name);
       setUpdatedType(groupData.type);
-      setUpdatedDateFormed(groupData.dateFormed);
-      setUpdatedMajorGenre(groupData.majorGenre);
-      setUpdatedMinorGenre(groupData.minorGenre);
-      setUpdatedCountry(groupData.country);
+      setUpdatedDateFormed(moment(groupData.dateFormed).format('YYYY-MM-DD'));
+      setUpdatedMajorGenre(
+        groupData.majorGenre ? groupData.majorGenre : { id: 0, name: 'none found' }
+      );
+      setUpdatedMinorGenre(
+        groupData.minorGenre ? groupData.minorGenre : { id: 0, name: 'none found' }
+      );
+      setUpdatedCountry(groupData.country ? groupData.country : { id: 0, name: 'none found' });
       // setUpdatePersons(groupData.persons);
     }
   }
 
   async function fetchCountries() {
+    setIsLoading(true);
     try {
       const countryData: any = await API.graphql({ query: queries.countries });
       setAvailableCountries(countryData.data.countries);
     } catch (err) {
       console.log('error: ', err);
     }
+    setIsLoading(false);
   }
 
   async function handleUpdateCountry(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -118,6 +128,7 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
   }
 
   async function fetchGenres() {
+    setIsLoading(true);
     try {
       const majorGenreData: any = await API.graphql({ query: queries.majorGenres });
       const minorGenreData: any = await API.graphql({ query: queries.minorGenres });
@@ -126,6 +137,7 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
     } catch (err) {
       console.log('error: ', err);
     }
+    setIsLoading(false);
   }
 
   function handleUpdateMajorGenre(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -148,7 +160,15 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
           <Spinner />
         </Card>
       )}
-      {groupData && toggleUpdateGroup && (
+      {groupDeleted && (
+        <Fragment>
+          <h2>Group successfully deleted.</h2>
+          <Link to="/search">
+            <Button>Back to Search</Button>
+          </Link>
+        </Fragment>
+      )}
+      {groupData && toggleUpdateGroup && !groupDeleted && (
         <Fragment>
           <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
           <select value={updatedType} onChange={(e) => setUpdatedType(e.target.value)}>
@@ -192,16 +212,22 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
             ))}
           </ul> */}
           <Button onClick={handleUpdate}>Submit Changes</Button>
-          <Button color={'light'} onClick={resetUpdateData}>
+          <Button
+            color={'light'}
+            onClick={() => {
+              resetUpdateData();
+              setToggleUpdateGroup(false);
+            }}
+          >
             Cancel Edit
           </Button>
         </Fragment>
       )}
-      {groupData && !toggleUpdateGroup && (
+      {groupData && !toggleUpdateGroup && !groupDeleted && (
         <Fragment>
           <h3>{groupData.name}</h3>
           <p>Type: {groupData.type}</p>
-          <p>Date formed: {groupData.dateFormed}</p>
+          <p>Date formed: {moment(groupData.dateFormed).format('YYYY-MM-DD')}</p>
           <p>Major genre: {groupData.majorGenre ? groupData.majorGenre.name : 'none found'}</p>
           <p>Minor Genre: {groupData.minorGenre ? groupData.minorGenre.name : 'none found'}</p>
           <p>Country: {groupData.country ? groupData.country.name : 'none found'}</p>
@@ -211,7 +237,14 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
               <li key={person.id}>{person.name}</li>
             ))}
           </ul> */}
-          <Button onClick={() => setToggleUpdateGroup(true)}>Edit Artist Info</Button>
+          <Button
+            onClick={() => {
+              resetUpdateData();
+              setToggleUpdateGroup(true);
+            }}
+          >
+            Edit Artist Info
+          </Button>
           <Button color={'light'} onClick={handleDelete}>
             Delete
           </Button>
