@@ -6,6 +6,8 @@ import PreLogin from './components/PreLogin';
 import Header from './components/Header';
 import AppContainer from './containers/AppContainer';
 import AddContainer from './containers/AddContainer';
+import PersonPage from './components/PersonPage';
+import GroupPage from './components/GroupPage';
 import './scss/app.scss';
 
 const App = () => {
@@ -13,19 +15,20 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <div className="app">
+        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <Router>
           <Switch>
             <Route exact path="/">
-              <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
               <PreLogin />
             </Route>
             <Route path="/search">
               <AppContainer isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
             </Route>
             <Route path="/add">
-              <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
               <AddContainer />
             </Route>
+            <Route path="/artist/:id" render={(props) => <PersonPage id={props.match.params} />} />
+            <Route path="/group/:id" render={(props) => <GroupPage id={props.match.params} />} />
           </Switch>
         </Router>
       </div>
