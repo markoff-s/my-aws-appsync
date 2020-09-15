@@ -13,7 +13,6 @@ import PersonPage from '../components/PersonPage';
 import AddContainer from './AddContainer';
 
 const MainContainer = () => {
-  const [searchTerm, setSearchTerm] = useState('');
   const [groups, setGroups] = useState<Group[]>([]);
   const [persons, setPersons] = useState<Person[]>([]);
   const [displayGroupScreen, setDisplayGroupScreen] = useState(false);
@@ -72,7 +71,8 @@ const MainContainer = () => {
   //   loadDataOnCompMount();
   // }, []);
 
-  async function handleSearch(searchType: string) {
+  async function handleSearch(searchType: string, searchTerm: string) {
+    setIsLoading(true);
     if (searchType === 'groups') {
       const groupsData: any = await API.graphql(
         graphqlOperation(queries.groups, { filter: { name: searchTerm } })
@@ -86,6 +86,7 @@ const MainContainer = () => {
       setPersons(artistsData.data.artists);
       setGroups([]);
     }
+    setIsLoading(false);
   }
 
   async function fetchGroups() {
@@ -145,11 +146,7 @@ const MainContainer = () => {
         The central place for creating and managing names and IDs for artists, participants,
         writers, producers, engineers, musicians, and other contributors.
       </p>
-      <SearchContainer
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        handleSearch={handleSearch}
-      />
+      <SearchContainer handleSearch={handleSearch} />
       <Link to="/add">
         <Button>Add Artist or Group</Button>
       </Link>
