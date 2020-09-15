@@ -113,7 +113,7 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
       name: updatedName,
       type: updatedType,
       dob: updatedDateOfBirth,
-      countryId: updatedCountry.id,
+      countryId: 36,
       // groups: updatedGroups,
     };
     try {
