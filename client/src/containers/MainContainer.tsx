@@ -13,6 +13,7 @@ import AddContainer from './AddContainer';
 const MainContainer = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [persons, setPersons] = useState<Person[]>([]);
+  const [noResultsFound, setNoResultsFound] = useState(false);
   const [displayGroupScreen, setDisplayGroupScreen] = useState(false);
   const [displayPersonScreen, setDisplayPersonScreen] = useState(false);
   const [displayAddScreen, setDisplayAddScreen] = useState(false);
@@ -70,6 +71,7 @@ const MainContainer = () => {
   // }, []);
 
   async function handleSearch(searchType: string, searchTerm: string) {
+    setNoResultsFound(false);
     setIsLoading(true);
     if (searchType === 'groups') {
       const groupsData: any = await API.graphql(
@@ -77,12 +79,14 @@ const MainContainer = () => {
       );
       setGroups(groupsData.data.groups);
       setPersons([]);
+      if (!groupsData.data.groups.length) setNoResultsFound(true);
     } else if (searchType === 'artists') {
       const artistsData: any = await API.graphql(
         graphqlOperation(queries.artists, { filter: { name: searchTerm } })
       );
       setPersons(artistsData.data.artists);
       setGroups([]);
+      if (!artistsData.data.artists.length) setNoResultsFound(true);
     }
     setIsLoading(false);
   }
@@ -148,34 +152,43 @@ const MainContainer = () => {
       <Link to="/add">
         <Button>Add Artist or Group</Button>
       </Link>
-      {error && (
-        <Card>
-          <h2>Nothing Found. Please Adjust Your Search.</h2>
-        </Card>
-      )}
-      {isLoading && (
-        <Card>
-          <Spinner />
-        </Card>
-      )}
-      {displayAddScreen && !displayGroupScreen && !displayPersonScreen && !error && (
-        <AddContainer />
-      )}
-      {!displayGroupScreen && !displayPersonScreen && !displayAddScreen && !error && !isLoading && (
-        <Fragment>
-          {totalResults > 0 && (
-            <Card>
-              <span className="bold">{totalResults}</span> Results
-            </Card>
+      <div className="results-message-container">
+        {(error || noResultsFound) && (
+          <Card className="no-results-message">
+            <h2>Nothing Found. Please Adjust Your Search.</h2>
+          </Card>
+        )}
+        {isLoading && (
+          <Card>
+            <Spinner />
+          </Card>
+        )}
+        {displayAddScreen &&
+          !displayGroupScreen &&
+          !displayPersonScreen &&
+          !error &&
+          !noResultsFound && <AddContainer />}
+        {!displayGroupScreen &&
+          !displayPersonScreen &&
+          !displayAddScreen &&
+          !error &&
+          !isLoading &&
+          !noResultsFound && (
+            <Fragment>
+              {totalResults > 0 && (
+                <Card>
+                  <span className="bold">{totalResults}</span> Results
+                </Card>
+              )}
+              <ResultsContainer
+                groups={groups}
+                persons={persons}
+                handleDisplayGroupScreen={handleDisplayGroupScreen}
+                handleDisplayPersonScreen={handleDisplayPersonScreen}
+              />
+            </Fragment>
           )}
-          <ResultsContainer
-            groups={groups}
-            persons={persons}
-            handleDisplayGroupScreen={handleDisplayGroupScreen}
-            handleDisplayPersonScreen={handleDisplayPersonScreen}
-          />
-        </Fragment>
-      )}
+      </div>
     </div>
   );
 };
