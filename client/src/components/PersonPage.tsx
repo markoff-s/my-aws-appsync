@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { v4 as uuid } from 'uuid';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import Spinner from '../components/Spinner';
@@ -15,6 +15,7 @@ interface PersonProps {
 
 const PersonPage: React.FC<PersonProps> = ({ id }) => {
   const [personData, setPersonData] = useState<Person | null>(null);
+  const [personDeleted, setPersonDeleted] = useState(false);
   const [toggleUpdatePerson, setToggleUpdatePerson] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [updatedName, setUpdatedName] = useState('');
@@ -39,7 +40,6 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
       );
       console.log(personDataResults);
       setPersonData(personDataResults.data.artist);
-      resetUpdateData();
       setIsLoading(false);
     } catch (err) {
       console.log(err);
@@ -52,6 +52,7 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
     try {
       await API.graphql(graphqlOperation(mutations.deleteArtist, { id: id.id }));
       console.log('Successfully deleted artist');
+      setPersonDeleted(true);
     } catch (err) {
       console.log('error: ', err);
     }
@@ -127,7 +128,7 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
 
   function resetUpdateData() {
     if (personData) {
-      setToggleUpdatePerson((prevState) => !prevState);
+      // setToggleUpdatePerson((prevState) => !prevState);
       setUpdatedName(personData.name);
       setUpdatedType(personData.type);
       setUpdatedDateOfBirth(personData.dob);
@@ -146,37 +147,40 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
           <Spinner />
         </Card>
       )}
-      {personData &&
-        (toggleUpdatePerson ? (
-          <Fragment>
-            <input
-              type="text"
-              value={updatedName}
-              onChange={(e) => setUpdatedName(e.target.value)}
-            />
-            <label htmlFor="type-select">Type</label>
-            <select
-              name="type-select"
-              value={updatedType}
-              onChange={(e) => setUpdatedType(e.target.value)}
-            >
-              <option value="NATURAL_PERSON">Natural Person</option>
-              <option value="UNNATURAL_PERSON">Unnatural Person</option>
-            </select>
-            <input
-              type="date"
-              value={updatedDateOfBirth}
-              onChange={(e) => setUpdatedDateOfBirth(e.target.value)}
-            />
-            <select value={updatedCountry.id} onChange={handleUpdateCountry}>
-              {availableCountries.length &&
-                availableCountries.map((country: Country) => (
-                  <option key={country.id} value={country.id}>
-                    {country.name}
-                  </option>
-                ))}
-            </select>
-            {/* <select value="" onChange={addGroup}>
+      {personDeleted && (
+        <Fragment>
+          <h2>Artist successfully deleted.</h2>
+          <Link to="/search">
+            <Button>Back to Search</Button>
+          </Link>
+        </Fragment>
+      )}
+      {personData && toggleUpdatePerson && !personDeleted && (
+        <Fragment>
+          <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
+          <label htmlFor="type-select">Type</label>
+          <select
+            name="type-select"
+            value={updatedType}
+            onChange={(e) => setUpdatedType(e.target.value)}
+          >
+            <option value="NATURAL_PERSON">Natural Person</option>
+            <option value="UNNATURAL_PERSON">Unnatural Person</option>
+          </select>
+          <input
+            type="date"
+            value={updatedDateOfBirth}
+            onChange={(e) => setUpdatedDateOfBirth(e.target.value)}
+          />
+          <select value={updatedCountry.id} onChange={handleUpdateCountry}>
+            {availableCountries.length &&
+              availableCountries.map((country: Country) => (
+                <option key={country.id} value={country.id}>
+                  {country.name}
+                </option>
+              ))}
+          </select>
+          {/* <select value="" onChange={addGroup}>
             <option value={0}>Select a Group</option>
             {availableGroups &&
               availableGroups.map((group: Group) => (
@@ -193,28 +197,42 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
               ))}
             </ul>
           )} */}
-            <Button onClick={handleUpdate}>Submit Changes</Button>
-            <Button color={'light'} onClick={resetUpdateData}>
-              Cancel Edit
-            </Button>
-          </Fragment>
-        ) : (
-          <Fragment>
-            <h3>{personData.name}</h3>
-            <p>{personData.type}</p>
-            <p>{personData.dob}</p>
-            <p>{personData.country ? personData.country.name : 'none found'}</p>
-            {/* <ul>
+          <Button onClick={handleUpdate}>Submit Changes</Button>
+          <Button
+            color={'light'}
+            onClick={() => {
+              resetUpdateData();
+              setToggleUpdatePerson(false);
+            }}
+          >
+            Cancel Edit
+          </Button>
+        </Fragment>
+      )}
+      {personData && !toggleUpdatePerson && !personDeleted && (
+        <Fragment>
+          <h3>{personData.name}</h3>
+          <p>{personData.type}</p>
+          <p>{personData.dob}</p>
+          <p>{personData.country ? personData.country.name : 'none found'}</p>
+          {/* <ul>
             {groups.map((group) => (
               <li key={group.id}>{group.name}</li>
             ))}
           </ul> */}
-            <Button onClick={() => setToggleUpdatePerson(true)}>Edit Artist Info</Button>
-            <Button color={'light'} onClick={handleDelete}>
-              Delete
-            </Button>
-          </Fragment>
-        ))}
+          <Button
+            onClick={() => {
+              resetUpdateData();
+              setToggleUpdatePerson(true);
+            }}
+          >
+            Edit Artist Info
+          </Button>
+          <Button color={'light'} onClick={handleDelete}>
+            Delete
+          </Button>
+        </Fragment>
+      )}
     </Card>
   );
 };
