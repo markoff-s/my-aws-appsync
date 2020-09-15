@@ -124,11 +124,11 @@ custom:
     file: ../client/src/stack.json
   appSync:
     name: ${self:service}-${self:custom.stage}    
-    authenticationType: AMAZON_COGNITO_USER_POOLS
-    userPoolConfig:
-      awsRegion: ${self:provider.region}
-      defaultAction: ALLOW
-      userPoolId:  { Ref: CognitoUserPool } 
+    authenticationType: API_KEY # AMAZON_COGNITO_USER_POOLS
+    # userPoolConfig:
+    #   awsRegion: ${self:provider.region}
+    #   defaultAction: ALLOW
+    #   userPoolId:  { Ref: CognitoUserPool } 
     logConfig:
       loggingRoleArn: { Fn::GetAtt: [AppSyncLoggingServiceRole, Arn] }
       level: ALL
