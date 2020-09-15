@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { v4 as uuid } from 'uuid';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import Card from '../styled-components/Card';
@@ -184,7 +183,7 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
           <select value={updatedMajorGenre.id} onChange={(e) => handleUpdateMajorGenre(e)}>
             {availableMajorGenres &&
               availableMajorGenres.map((majorGenre) => (
-                <option key={uuid()} value={majorGenre.id}>
+                <option key={`majorgenre-${majorGenre.id}`} value={majorGenre.id}>
                   {majorGenre.name}
                 </option>
               ))}
@@ -192,7 +191,7 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
           <select value={updatedMinorGenre.id} onChange={(e) => handleUpdateMinorGenre(e)}>
             {availableMinorGenres &&
               availableMinorGenres.map((minorGenre) => (
-                <option key={uuid()} value={minorGenre.id}>
+                <option key={`minorgenre-${minorGenre.id}`} value={minorGenre.id}>
                   {minorGenre.name}
                 </option>
               ))}
@@ -201,7 +200,7 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
           <select value={updatedCountry.id} onChange={handleUpdateCountry}>
             {availableCountries.length &&
               availableCountries.map((country: Country) => (
-                <option key={uuid()} value={country.id}>
+                <option key={`country-${country.id}`} value={country.id}>
                   {country.name}
                 </option>
               ))}
