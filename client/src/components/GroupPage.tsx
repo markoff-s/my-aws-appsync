@@ -48,6 +48,7 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
         graphqlOperation(queries.group, { id: id.id })
       );
       setGroupData(groupDataResults.data.group);
+      console.log(groupDataResults.data.group);
     } catch (err) {
       console.log(err);
     }
@@ -72,9 +73,9 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
       name: updatedName,
       type: updatedType,
       dateFormed: updatedDateFormed,
-      majorGenreId: updatedMajorGenre.id,
-      minorGenreId: updatedMinorGenre.id,
-      countryId: updatedCountry.id,
+      majorGenreId: 863,
+      minorGenreId: 774,
+      countryId: 36,
       // persons: updatedPersons
     };
     try {
