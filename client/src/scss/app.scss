@@ -70,6 +70,18 @@ $indentation: 1rem;
   }
 }
 
+.add-container {
+  .buttons {
+    > * {
+      margin: 0.5rem;
+    }
+  }
+  .add-person-form,
+  .add-group-form {
+    width: 80vw;
+  }
+}
+
 $grid-cols-desktop: repeat(4, 1fr);
 .results-container {
   .results__categories {
