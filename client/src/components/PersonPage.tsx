@@ -108,7 +108,7 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
 
   async function handleUpdate() {
     const updatedArtist = {
-      id,
+      id: id.id,
       name: updatedName,
       type: updatedType,
       dob: updatedDateOfBirth,
