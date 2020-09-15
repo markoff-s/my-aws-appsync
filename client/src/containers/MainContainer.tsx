@@ -181,20 +181,6 @@ const MainContainer = () => {
           />
         </Fragment>
       )}
-      {displayGroupScreen && !displayPersonScreen && currentGroupData && !error && (
-        <GroupPage
-          group={currentGroupData}
-          setGroups={setGroups}
-          handleGoBack={handleDisplayReset}
-        />
-      )}
-      {!displayGroupScreen && displayPersonScreen && currentPersonData && !error && (
-        <PersonPage
-          person={currentPersonData}
-          setPersons={setPersons}
-          handleGoBack={handleDisplayReset}
-        />
-      )}
     </div>
   );
 };
