@@ -82,12 +82,6 @@ const AddPerson = () => {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <input
-        type="text"
-        placeholder="Enter type"
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-      />
       <label htmlFor="type-select">Type</label>
       <select name="type-select" value={type} onChange={(e) => setType(e.target.value)}>
         <option value="NATURAL_PERSON">Natural Person</option>

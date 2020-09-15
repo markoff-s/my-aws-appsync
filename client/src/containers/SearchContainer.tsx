@@ -3,16 +3,15 @@ import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import Input from '../styled-components/Input';
 interface Props {
-  searchTerm: string;
-  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-  handleSearch: (searchType: string) => Promise<void>;
+  handleSearch: (searchType: string, searchTerm: string) => Promise<void>;
 }
 
-const SearchContainer: React.FC<Props> = ({ searchTerm, setSearchTerm, handleSearch }) => {
+const SearchContainer: React.FC<Props> = ({ handleSearch }) => {
   const [searchType, setSearchType] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const triggerSearch = () => {
     if (searchType) {
-      handleSearch(searchType);
+      handleSearch(searchType, searchTerm);
     }
   };
   return (
