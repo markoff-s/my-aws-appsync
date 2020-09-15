@@ -1,35 +1,34 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Button from '../styled-components/Button';
 import AddPerson from '../components/AddPerson';
 import AddGroup from '../components/AddGroup';
-import { Group, Person } from '../types/ArtistTypes';
 
-interface Props {
-  handleDisplayReset: () => void;
-  setGroups: React.Dispatch<React.SetStateAction<Group[]>>;
-  setPersons: React.Dispatch<React.SetStateAction<Person[]>>;
-}
-
-const AddContainer: React.FC<Props> = ({ handleDisplayReset, setGroups, setPersons }) => {
+const AddContainer: React.FC = () => {
   const [toggleArtist, setToggleArtist] = useState(true);
   const [toggleGroup, setToggleGroup] = useState(false);
 
-  const handleToggle = () => {
-    setToggleArtist((prevState) => !prevState);
-    setToggleGroup((prevState) => !prevState);
+  const handleToggleArtist = () => {
+    setToggleArtist(true);
+    setToggleGroup(false);
+  };
+
+  const handleToggleGroup = () => {
+    setToggleArtist(false);
+    setToggleGroup(true);
   };
 
   return (
     <div className="add-container">
-      <Button onClick={handleDisplayReset} color="light">
-        Back to Search
-      </Button>
+      <Link to="/search">
+        <Button color="light">Back to Search</Button>
+      </Link>
       <div className="buttons">
-        <Button onClick={handleToggle}>Add Artist</Button>
-        <Button onClick={handleToggle}>Add Group</Button>
+        <Button onClick={handleToggleArtist}>Add Artist</Button>
+        <Button onClick={handleToggleGroup}>Add Group</Button>
       </div>
-      {toggleArtist && <AddPerson setPersons={setPersons} />}
-      {toggleGroup && <AddGroup setGroups={setGroups} />}
+      {toggleArtist && <AddPerson />}
+      {toggleGroup && <AddGroup />}
     </div>
   );
 };
