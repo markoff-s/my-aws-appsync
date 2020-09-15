@@ -83,27 +83,40 @@ $indentation: 1rem;
 }
 
 $grid-cols-desktop: repeat(4, 1fr);
-.results-container {
-  .results__categories {
-    display: grid;
-    grid-template-columns: $grid-cols-desktop;
+.results-message-container {
+  // Establishes a constant card size
+  // currently causing issues with spinner
+  // div:first-child {
+  //   min-height: 60vh;
+  // }
+  .no-results-message {
+    h2 {
+      color: $gray;
+      font-style: italic;
+    }
   }
-  .results-grid a {
-    text-decoration: none;
-    color: $black;
-    width: 100%;
-  }
+  .results-container {
+    .results__categories {
+      display: grid;
+      grid-template-columns: $grid-cols-desktop;
+    }
+    .results-grid a {
+      text-decoration: none;
+      color: $black;
+      width: 100%;
+    }
 
-  .result {
-    width: 100%;
-    display: grid;
-    grid-template-columns: $grid-cols-desktop;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    .result {
+      width: 100%;
+      display: grid;
+      grid-template-columns: $grid-cols-desktop;
+      cursor: pointer;
+      transition: all 0.2s ease;
 
-    &:hover {
-      background-color: $accent-primary;
-      color: $white;
+      &:hover {
+        background-color: $accent-primary;
+        color: $white;
+      }
     }
   }
 }
