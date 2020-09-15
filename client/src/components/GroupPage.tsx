@@ -153,21 +153,14 @@ const GroupPage: React.FC<GroupProps> = ({ id }) => {
   return (
     <Card>
       <Link to="/search">
-        <Button>Go Back</Button>
+        <Button>Back to Search</Button>
       </Link>
       {isLoading && (
         <Card>
           <Spinner />
         </Card>
       )}
-      {groupDeleted && (
-        <Fragment>
-          <h2>Group successfully deleted.</h2>
-          <Link to="/search">
-            <Button>Back to Search</Button>
-          </Link>
-        </Fragment>
-      )}
+      {groupDeleted && <h2>Group successfully deleted.</h2>}
       {groupData && toggleUpdateGroup && !groupDeleted && (
         <Fragment>
           <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />

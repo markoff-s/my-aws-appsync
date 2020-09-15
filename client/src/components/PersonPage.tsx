@@ -141,21 +141,14 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
   return (
     <Card>
       <Link to="/search">
-        <Button>Go Back</Button>
+        <Button>Back to Search</Button>
       </Link>
       {isLoading && (
         <Card>
           <Spinner />
         </Card>
       )}
-      {personDeleted && (
-        <Fragment>
-          <h2>Artist successfully deleted.</h2>
-          <Link to="/search">
-            <Button>Back to Search</Button>
-          </Link>
-        </Fragment>
-      )}
+      {personDeleted && <h2>Artist successfully deleted.</h2>}
       {personData && toggleUpdatePerson && !personDeleted && (
         <Fragment>
           <input type="text" value={updatedName} onChange={(e) => setUpdatedName(e.target.value)} />
