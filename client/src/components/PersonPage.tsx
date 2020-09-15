@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { v4 as uuid } from 'uuid';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
 import Spinner from '../components/Spinner';
@@ -33,22 +34,20 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
   }, []);
 
   async function queryPersonData() {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const personDataResults: any = await API.graphql(
         graphqlOperation(queries.artist, { id: id.id })
       );
-      console.log(personDataResults);
       setPersonData(personDataResults.data.artist);
-      setIsLoading(false);
     } catch (err) {
       console.log(err);
     }
+    setIsLoading(false);
   }
 
   async function handleDelete() {
-    // setPersons((prevState: any) => prevState.filter((person: Person) => person.id !== Number(id)));
-    // console.log({ id });
+    setIsLoading(true);
     try {
       await API.graphql(graphqlOperation(mutations.deleteArtist, { id: id.id }));
       console.log('Successfully deleted artist');
@@ -56,6 +55,7 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
     } catch (err) {
       console.log('error: ', err);
     }
+    setIsLoading(false);
   }
 
   useEffect(() => {
@@ -120,18 +120,19 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
       await API.graphql(graphqlOperation(mutations.updateArtist, { input: updatedArtist }));
 
       console.log('Successfully updated person');
+      setToggleUpdatePerson(false);
+      queryPersonData();
     } catch (err) {
       console.log('error: ', err);
+      setToggleUpdatePerson(false);
     }
-    setToggleUpdatePerson(false);
   }
 
   function resetUpdateData() {
     if (personData) {
-      // setToggleUpdatePerson((prevState) => !prevState);
       setUpdatedName(personData.name);
       setUpdatedType(personData.type);
-      setUpdatedDateOfBirth(personData.dob);
+      setUpdatedDateOfBirth(moment(personData.dob).format('YYYY-MM-DD'));
       setUpdatedCountry(personData.country);
       // setUpdatedGroups(personData.groups);
     }
@@ -213,7 +214,7 @@ const PersonPage: React.FC<PersonProps> = ({ id }) => {
         <Fragment>
           <h3>{personData.name}</h3>
           <p>{personData.type}</p>
-          <p>{personData.dob}</p>
+          <p>{moment(personData.dob).format('YYYY-MM-DD')}</p>
           <p>{personData.country ? personData.country.name : 'none found'}</p>
           {/* <ul>
             {groups.map((group) => (
