@@ -11,7 +11,7 @@ import GroupPage from './components/GroupPage';
 import './scss/app.scss';
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   return (
     <ThemeProvider theme={theme}>
       <div className="app">

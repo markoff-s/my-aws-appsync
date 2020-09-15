@@ -106,7 +106,7 @@ const AddGroup: React.FC<Props> = ({ setMessage }) => {
   }
 
   return (
-    <StyledForm>
+    <StyledForm className="add-group-form">
       <input
         type="text"
         placeholder="Enter group's name"

@@ -64,6 +64,24 @@ $indentation: 1rem;
   }
 }
 
+.search-container {
+  > * {
+    margin: 0 0.5rem;
+  }
+}
+
+.add-container {
+  .buttons {
+    > * {
+      margin: 0.5rem;
+    }
+  }
+  .add-person-form,
+  .add-group-form {
+    width: 80vw;
+  }
+}
+
 $grid-cols-desktop: repeat(4, 1fr);
 .results-container {
   .results__categories {
