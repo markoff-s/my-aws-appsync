@@ -1,8 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
+import API, { graphqlOperation } from '@aws-amplify/api';
+import { Link } from 'react-router-dom';
 import Card from '../styled-components/Card';
 import Button from '../styled-components/Button';
+import Spinner from '../styled-components/Spinner';
 import * as queries from '../graphql/queries';
-import API from '@aws-amplify/api';
 import { Group, Person } from '../types/ArtistTypes';
 import SearchContainer from './SearchContainer';
 import ResultsContainer from './ResultsContainer';
@@ -14,24 +16,24 @@ const MainContainer = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [groups, setGroups] = useState<Group[]>([]);
   const [persons, setPersons] = useState<Person[]>([]);
-  const [filteredGroups, setFilteredGroups] = useState<Group[]>([]);
-  const [filteredPersons, setFilteredPersons] = useState<Person[]>([]);
-  const [displayResults, setDisplayResults] = useState(false);
   const [displayGroupScreen, setDisplayGroupScreen] = useState(false);
   const [displayPersonScreen, setDisplayPersonScreen] = useState(false);
   const [displayAddScreen, setDisplayAddScreen] = useState(false);
   const [currentGroupData, setCurrentGroupData] = useState<Group | null>(null);
   const [currentPersonData, setCurrentPersonData] = useState<Person | null>();
-  const [loadingResults, setLoadingResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-
-  // TODO: incorporate React router logic here
 
   // Grab all group & person data (can later refactor for scalability)
   useEffect(() => {
-    console.log('initializing filtered results');
-    fetchGroups();
-    fetchPersons();
+    console.log('fetching data');
+    const fetchAllData = async () => {
+      setIsLoading(true);
+      await fetchGroups();
+      await fetchPersons();
+      setIsLoading(false);
+    };
+    fetchAllData();
   }, []);
 
   // update filtered results based on search string
@@ -54,39 +56,45 @@ const MainContainer = () => {
 
   // log current persons data
   useEffect(() => {
-    // console.log({ persons });
-    // console.log({ groups });
-    console.log({ filteredPersons });
-    console.log({ filteredGroups });
-  }, [filteredGroups, filteredPersons]);
+    console.log({ persons });
+    console.log({ groups });
+  }, [persons, groups]);
 
   // load all data when component mounts
-  useEffect(() => {
-    const loadDataonCompMount = async () => {
-      setLoadingResults(true);
-      await fetchGroups();
-      await fetchPersons();
-      setLoadingResults(false);
-      setDisplayResults(true);
-      console.log('you should see results now');
-    };
-    loadDataonCompMount();
-  }, []);
+  // useEffect(() => {
+  //   const loadDataOnCompMount = async () => {
+  //     setIsLoading(true);
+  //     await fetchGroups();
+  //     await fetchPersons();
+  //     setIsLoading(false);
+  //     setDisplayResults(true);
+  //   };
+  //   loadDataOnCompMount();
+  // }, []);
 
-  function handleSearch() {
-    setLoadingResults(true);
-    fetchGroups();
-    fetchPersons();
-    setLoadingResults(false);
-    setDisplayResults(true);
+  async function handleSearch(searchType: string) {
+    if (searchType === 'groups') {
+      const groupsData: any = await API.graphql(
+        graphqlOperation(queries.groups, { filter: { name: searchTerm } })
+      );
+      setGroups(groupsData.data.groups);
+      setPersons([]);
+    } else if (searchType === 'artists') {
+      const artistsData: any = await API.graphql(
+        graphqlOperation(queries.artists, { filter: { name: searchTerm } })
+      );
+      setPersons(artistsData.data.artists);
+      setGroups([]);
+    }
   }
 
   async function fetchGroups() {
     try {
       const groupsData: any = await API.graphql({ query: queries.groups });
-      setFilteredGroups(groupsData.data.groups);
+      setGroups(groupsData.data.groups);
     } catch (err) {
       setError(true);
+      setIsLoading(false);
       console.log('error: ', err);
     }
   }
@@ -94,26 +102,16 @@ const MainContainer = () => {
   async function fetchPersons() {
     try {
       const personsData: any = await API.graphql({ query: queries.artists });
-      setFilteredPersons(personsData.data.artists);
+      setPersons(personsData.data.artists);
       console.log('got artist data');
     } catch (err) {
       setError(true);
+      setIsLoading(false);
       console.log('error: ', err);
     }
   }
 
-  // Note: filtering logic currently looks for the search string anywhere in the name
-  // TODO: Refactor so that search only occurs when user explicitly clicks/taps button
-  function updateResults() {
-    const regex = new RegExp(searchTerm, 'i');
-    const updatedGroups = groups.filter((group) => group.name.match(regex));
-    const updatedPersons = persons.filter((person) => person.name.match(regex));
-    console.log(updatedPersons);
-    setFilteredGroups(updatedGroups);
-    setFilteredPersons(updatedPersons);
-  }
-
-  const totalResults = filteredGroups.length + filteredPersons.length;
+  const totalResults = (groups ? groups.length : 0) + (persons ? persons.length : 0);
 
   function handleDisplayGroupScreen(group: Group) {
     setCurrentGroupData(group);
@@ -147,41 +145,34 @@ const MainContainer = () => {
         The central place for creating and managing names and IDs for artists, participants,
         writers, producers, engineers, musicians, and other contributors.
       </p>
-      <Button onClick={() => setDisplayAddScreen(true)}>Add Artist or Group</Button>
+      <SearchContainer
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        handleSearch={handleSearch}
+      />
+      <Link to="/add">
+        <Button>Add Artist or Group</Button>
+      </Link>
       {error && <h2>Nothing Found. Please Adjust Your Search.</h2>}
+      {isLoading && <h2>Loading data!</h2>}
       {displayAddScreen && !displayGroupScreen && !displayPersonScreen && !error && (
-        <AddContainer
-          setGroups={setGroups}
-          setPersons={setPersons}
-          handleDisplayReset={handleDisplayReset}
-        />
+        <AddContainer />
       )}
-      {!displayGroupScreen &&
-        !displayPersonScreen &&
-        !displayAddScreen &&
-        !error &&
-        !loadingResults && (
-          <Fragment>
-            <SearchContainer
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              handleSearch={handleSearch}
-            />
-            {totalResults > 0 && (
-              <Card>
-                <span className="bold">{totalResults}</span> Results
-              </Card>
-            )}
-            <ResultsContainer
-              filteredGroups={filteredGroups}
-              filteredPersons={filteredPersons}
-              displayResults={displayResults}
-              handleDisplayGroupScreen={handleDisplayGroupScreen}
-              handleDisplayPersonScreen={handleDisplayPersonScreen}
-              loadingResults={loadingResults}
-            />
-          </Fragment>
-        )}
+      {!displayGroupScreen && !displayPersonScreen && !displayAddScreen && !error && (
+        <Fragment>
+          {totalResults > 0 && (
+            <Card>
+              <span className="bold">{totalResults}</span> Results
+            </Card>
+          )}
+          <ResultsContainer
+            groups={groups}
+            persons={persons}
+            handleDisplayGroupScreen={handleDisplayGroupScreen}
+            handleDisplayPersonScreen={handleDisplayPersonScreen}
+          />
+        </Fragment>
+      )}
       {displayGroupScreen && !displayPersonScreen && currentGroupData && !error && (
         <GroupPage
           group={currentGroupData}
